@@ -1,0 +1,10 @@
+
+let x := 888;
+
+let y := 777;
+
+let name := "David";
+
+get_user :: () -> int {
+	let age := 22;
+}

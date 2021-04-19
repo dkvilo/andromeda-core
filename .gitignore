@@ -1,0 +1,5 @@
+deps/bgfx
+deps/bx
+deps/bimg
+deps/glfw
+build/
