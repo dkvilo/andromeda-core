@@ -5,6 +5,7 @@ namespace L
 {
   struct Vec2;
   struct Quat;
+  struct Proxima;
 }
 
 #endif // __ANDROMEDA_LIBS__

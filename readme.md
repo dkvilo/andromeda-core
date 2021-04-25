@@ -15,25 +15,48 @@ Spec: C++ 11
   make build
   
   # build sandbox layer
-  make run
+  make app
   
   # run the application
-  make app 
+  make run 
 
 ```
 
 
 ## Proxima
 
-```prx
+```rust
 
-  let x := 888;
-  let y := 777;
+// let is local scope
+let x: @i8 := 3;
+let y: @i8 := 5;
+let z: @f32 := 33.0;
 
-  let name := "David";
+let name: @str := "David";
+let grate: @char := 'A';
+let is_valid: @bool := true;
 
-  get_user :: () -> int {
-    let age := 22;
-  }
+extern get_user :: (name: @str, age: @i8) -> @i8 {
+  return age * 2;
+};
+
+// Struct with constructor 
+extern typedef struct Person :: <name: @str, age: @i8> -> @(self) {
+  self(name, age); // bind arg to the property automatically (based on param type)
+};
+
+extern get_age :: (ptr& @Person) -> @i8 {
+  return ptr->age;
+}
+
+extern dereference :: (ptr& @Person) -> @Person {
+  @(Person)[ptr]->age = 22;
+  return ptr;
+}
+
+// Actor interface for the Person, Entity and User type
+#Actor :: [ptr&: @Person, @Entity, @User] {
+  extern act :: (ptr: @(self));
+};
 
 ```

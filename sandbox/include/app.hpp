@@ -6,11 +6,14 @@
 #include "window/window.hpp"
 #include "entity/entity.hpp"
 #include "../../libs/math/vec2.hpp"
+#include "../../libs/proxima/proxima.hpp"
+
 struct Sandbox
 {
 private:
   Andromeda::Log logger;
   Andromeda::Window *my_wind;
+  L::Proxima *proxima_vm;
 
 public:
   L::Vec2 mouse_pos;
@@ -38,6 +41,7 @@ public:
 
   Sandbox()
   {
+    this->proxima_vm->run("./test.prx");
     logger.set_prefix("Sandbox");
   }
 

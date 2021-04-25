@@ -1,9 +1,39 @@
+#ifndef __PROXIMA_HPP__
+#define __PROXIMA_HPP__
+
 #include <stdio.h>
 #include <cstdlib>
 #include <cstring>
 #include <ctype.h>
 
-void rm_from_str(char *source, char target)
+#include "../libs.hpp"
+
+struct L::Proxima
+{
+
+  enum Token
+  {
+    TokNone,
+    TokKeyword,    // lRun(const char *file)et, if, while, return, func, float ...
+    TokIdentifier, // x, name, color ...
+    TokSeparator,  // {, [, (, ;
+    TokOperator,   // :=, ::, +, -, /, *, %
+    TokLiteral,    // true, 1, 0.1, "String", 'a'
+    TokComment     // /* */,  //
+  };
+
+  void rm_from_str(char *source, char target);
+  const char *read_file_content(const char *path);
+  void parse_variable(char *buf);
+  char *line_by_line(char *key, const char *path);
+  const char *tok_to_str(Token tok);
+  void parse(char c);
+
+public:
+  void run(const char *file);
+};
+
+void L::Proxima::rm_from_str(char *source, char target)
 {
   char *i = source;
   char *j = source;
@@ -18,7 +48,7 @@ void rm_from_str(char *source, char target)
   *i = 0;
 }
 
-const char *read_file_content(const char *path)
+const char *L::Proxima::read_file_content(const char *path)
 {
   FILE *infile;
   char *buffer;
@@ -37,14 +67,16 @@ const char *read_file_content(const char *path)
   fseek(infile, 0L, SEEK_SET);
   buffer = (char *)calloc(numbytes, sizeof(char));
   if (buffer == NULL)
+  {
     exit(-1);
+  }
 
   fread(buffer, sizeof(char), numbytes, infile);
   fclose(infile);
   return buffer;
 }
 
-char *line_by_line(char *key, const char *path)
+char *L::Proxima::line_by_line(char *key, const char *path)
 {
   char *line[1024];
   const char *search = "=";
@@ -70,31 +102,20 @@ char *line_by_line(char *key, const char *path)
   return value;
 }
 
-enum Token
-{
-  TokNone,
-  TokKeyword,    // let, if, while, return, func, float ...
-  TokIdentifier, // x, name, color ...
-  TokSeparator,  // {, [, (, ;
-  TokOperator,   // :=, ::, +, -, /, *, %
-  TokLiteral,    // true, 1, 0.1, "String", 'a'
-  TokComment     // /* */,  //
-};
-
-const char *tok_to_str(Token tok)
+const char *L::Proxima::tok_to_str(L::Proxima::Token tok)
 {
   switch (tok)
   {
-  case TokNone:
+  case L::Proxima::TokNone:
     return "NONE";
     break;
-  case TokKeyword:
+  case L::Proxima::TokKeyword:
     return "KEYWORD";
     break;
-  case TokOperator:
+  case L::Proxima::TokOperator:
     return "OPERATOR";
     break;
-  case TokComment:
+  case L::Proxima::TokComment:
     return "COMMENT";
     break;
   };
@@ -102,23 +123,23 @@ const char *tok_to_str(Token tok)
 }
 
 // let x := 1;
-void parse(char c)
+void L::Proxima::parse(char c)
 {
   printf("Found operator LET [%c]", c);
 }
 
-void parse_variable(char *buf)
+void L::Proxima::parse_variable(char *buf)
 {
   const char *spliter = ":=";
   const char *key = strtok(buf, spliter);
   printf("\nfound:[%s]\n", buf);
 }
 
-int main()
+void L::Proxima::run(const char *file)
 {
-  const char *buf = read_file_content("lang.prx");
+  const char *buf = L::Proxima::read_file_content(file);
 
-  int length = strlen(buf); // / sizeof(file_content[0]);
+  int length = strlen(buf);
   for (unsigned long long ind = 0; ind < length; ind++)
   {
     if (buf[ind + 0] == '/' && buf[ind + 1] == '/')
@@ -130,6 +151,6 @@ int main()
       parse_variable((char *)buf);
     }
   }
-
-  return 0;
 }
+
+#endif // __PROXIMA_HPP__
