@@ -13,7 +13,7 @@ private:
 public:
   inline void set_prefix(const char *prefix)
   {
-    this->m_prefix = (char *)prefix;
+    this->m_prefix = const_cast<char *>(prefix);
   }
 
   inline void Print(const char *message)

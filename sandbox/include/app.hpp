@@ -2,56 +2,93 @@
 #define __SANDBOX_APP__
 
 #include "andromeda.hpp"
-#include "log/log.hpp"
 #include "window/window.hpp"
 #include "entity/entity.hpp"
+
+#define ANDROMEDA_EDITOR
+#include "editor/editor.hpp"
+
+#define GLM_HAS_UNRESTRICTED_UNIONS
+#include "glm/vec3.hpp"
+
+#include "../../libs/math/functions.hpp"
 #include "../../libs/math/vec2.hpp"
 #include "../../libs/proxima/proxima.hpp"
+#include "../../libs/gl/gl.hpp"
+
+//
+// Do not forget to housekeep the size of the array
+//
+#define ENTITY_MANAGER_SIZE 12
 
 struct Sandbox
 {
 private:
-  Andromeda::Log logger;
   Andromeda::Window *my_wind;
   L::Proxima *proxima_vm;
 
 public:
-  L::Vec2 mouse_pos;
-
-  inline void Init()
-  {
-    Andromeda::Types::WindowConfog conf{
-        .title = "Hello, World",
-        .width = 1080,
-        .height = 720,
-    };
-    this->my_wind = new Andromeda::Window(&conf);
-    this->my_wind->hide_cursor();
-  }
-
-  inline GLFWwindow *get_widnow()
-  {
-    return this->my_wind->get_id();
-  }
-
-  inline void Log(const char *message)
-  {
-    logger.Print(message);
-  }
+  int Width, Height;
+  double deltaTime;
+  double elapsedTime = Andromeda::Window::TimeNow();
+  Andromeda::Entity *EntityRegistry[ENTITY_MANAGER_SIZE];
 
   Sandbox()
   {
+    // Load Proxima VM
     this->proxima_vm->run("./test.prx");
-    logger.set_prefix("Sandbox");
+
+    // Configure Window
+    Andromeda::Types::WindowConfog conf{
+        "Andromeda Core V: 0.0.101-rc",
+        1080,
+        720,
+    };
+
+    // Create new Window
+    this->my_wind = new Andromeda::Window(&conf);
+
+    // Attach Window Key handler
+    Andromeda::Window::KeyHandler(this->GetWidnowId(), Sandbox::KeyHandler);
   }
 
-  ~Sandbox() {}
+  inline GLFWwindow *const GetWidnowId() const
+  {
+    return this->my_wind->GetId();
+  }
+
+  inline Andromeda::Window *Window() const
+  {
+    return this->my_wind;
+  }
+
+  void UpdateTime(double ct)
+  {
+    this->deltaTime = ct - this->elapsedTime;
+    this->elapsedTime = ct;
+  }
+
+  void Resize()
+  {
+    glfwGetWindowSize(this->GetWidnowId(), &this->Width, &this->Height);
+  }
+
+  static void Draw(int width, int height);
+
+  static void BaseRenderer(int width, int height)
+  {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0, width, height, 0.0, 0.0, 100);
+    glViewport(0, 0, width, height);
+  }
   /*
 	 *
 	 * WINDOW Callbacks
 	 *
 	 */
-  inline static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+  static void KeyHandler(GLFWwindow *window, int key, int scancode, int action, int mods)
   {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {

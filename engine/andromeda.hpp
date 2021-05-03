@@ -1,11 +1,23 @@
 #ifndef __ANDROMEDA_CORE_API__
 #define __ANDROMEDA_CORE_API__
 
+#include <iostream>
+
+#define ASSERT(check, msg)                                   \
+  {                                                          \
+    if (!(check))                                            \
+    {                                                        \
+      std::cout << "Assertion failed: " << msg << std::endl; \
+      exit(1);                                               \
+    }                                                        \
+  }
+
 namespace Andromeda
 {
   struct Entity;
   struct UI;
-  struct Editor;
+
+  class Editor;
   class Window;
   class Log;
 }

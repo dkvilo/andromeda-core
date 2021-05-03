@@ -1,10 +1,20 @@
 # Andromeda-Core
 
-Probably another Game Library build top on the bgfx backend. Which will have it's own programming language frontend (Proxima) build top on llvm
+Probably another Game Library. Which will have it's own programming language frontend (Proxima) build top on llvm
 
 Project is very sideeey, It is possible that I'll newer finish it.
 
 Spec: C++ 11
+
+
+# WIP Screenshots
+
+## Editor build (1.2 MB)
+<img src="https://github.com/dkvilo/andromeda-core/blob/main/screenshots/editor.png" />
+
+## Release build (90.1 KB)
+<img src="https://github.com/dkvilo/andromeda-core/blob/main/screenshots/release.png" />
+
 
 ```zsh
 
@@ -14,14 +24,30 @@ Spec: C++ 11
   # build dependencies
   make build
   
-  # build sandbox layer
-  make app
+  # build sandbox layer in debug mode (Include Engine editor UI)
+  make editor
   
-  # run the application
-  make run 
+  # Run Debug (Engine)
+  make run-editor
+
+  # build sandbox layer in release mode (Only Game Layer)
+  # 
+  # It's important to remove ANDROMEDA_EDITOR definition from sandbox/include/app.hpp
+  # 
+  make release
+
+  # Run release
+  make run-release
+
+  # Build debug (Sandbox layer)
+  make debug
+  # You can use debug build with gdb  
+  gdb
+  > file ./build/sandbox/build-debug
+  > run
+  > bt
 
 ```
-
 
 ## Proxima
 

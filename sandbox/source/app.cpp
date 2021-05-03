@@ -1,42 +1,90 @@
 #include "app.hpp"
-#include <cstdlib>
-#include <stdio.h>
+
+void put_pixel_impl(unsigned int size, const L::Vec2 pos, const glm::vec3 color)
+{
+  glPointSize(size);
+  glTranslatef(pos.x, pos.y, 0);
+  glBegin(GL_POINTS);
+  glVertex3f(pos.x, pos.y, 0.0f);
+  glColor3f(color.r, color.g, color.b);
+  glEnd();
+}
+
+struct Sprite : public Andromeda::Entity
+{
+  void update() override
+  {
+    put_pixel_impl(this->scale, this->position, this->color);
+  };
+};
+
+// Sandbox Draw Implementation
+void Sandbox::Draw(int width, int height)
+{
+  // Extend Base Renderer from sandbox
+  Sandbox::BaseRenderer(width, height);
+  glClearColor(0.11f, 0.11f, 0.11f, 1);
+}
 
 int main(int argc, char const *argv[])
 {
 
-  Sandbox app;
-  app.Init();
+  Sandbox app = Sandbox();
 
-  glfwSetKeyCallback(app.get_widnow(), app.key_callback);
+  Andromeda::Editor::SetWindow(app.Window());
+  Andromeda::Editor::Init();
 
-  double prevTime = glfwGetTime();
-  while (!glfwWindowShouldClose(app.get_widnow()))
+  Sprite player;
+  player.name = "Player";
+  player.flag = 0;
+  player.scale = 161.f;
+  player.position = L::Vec2(50.f, 62.f);
+  player.color = glm::vec3(0.985f, 0.145f, 0.442f);
+  Andromeda::Manager::AddEntity(0, &player);
+
+  Sprite enemy;
+  enemy.name = "Enemy";
+  enemy.is_static = true;
+  enemy.flag = 1;
+  enemy.scale = 100;
+  enemy.position = L::Vec2(100.f, 40.f);
+  enemy.color = glm::vec3(1, 1, 1);
+  Andromeda::Manager::AddEntity(1, &enemy);
+
+  while (!Andromeda::Window::ShouldClose(app.GetWidnowId()))
   {
+    // Leasent for global events
+    Andromeda::Window::PullEvents();
 
-    double t = glfwGetTime();
-    double dt = t - prevTime;
-    prevTime = t;
+    // Update time in sandbox env
+    app.UpdateTime(Andromeda::Window::TimeNow());
 
-    glViewport(0, 0, 500, 500);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0, 0.4, 0, 0.05);
+    // Draw in sandbox
+    app.Draw(app.Width, app.Height);
 
-    L::Vec2 v2(10.f, 5.f);
-    L::Vec2 v3(2.f, 1.f);
-    L::Vec2 v4(2.f, 2.f);
+    for (int i = 0; i < Andromeda::Manager::Registry.size(); i++)
+    {
+      printf("%d\n", i);
+      auto ent = Andromeda::Manager::GetEntity(i);
+      if (!ent->is_static)
+      {
+        ent->update();
+      }
+    }
 
-    app.mouse_pos = v2 + &v3;
-    app.mouse_pos = app.mouse_pos * &v4;
+    // Resize Geometry owned by sandbox
+    app.Resize();
 
-    printf("Delta Time: %f | X(%f) Y(%f)\n", dt, app.mouse_pos.x, app.mouse_pos.y);
+    // Update Endinge Editor UI
+    Andromeda::Editor::Update();
 
-    glfwSwapBuffers(app.get_widnow());
-    glfwPollEvents();
+    // Swap Buffers
+    Andromeda::Window::SwapBuffers(app.GetWidnowId());
   }
 
-  glfwDestroyWindow(app.get_widnow());
-  glfwTerminate();
+  // Clean Up
+  Andromeda::Editor::Clean();
+  Andromeda::Window::Destory(app.GetWidnowId());
 
   return 0;
 }

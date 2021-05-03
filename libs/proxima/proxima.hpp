@@ -122,7 +122,6 @@ const char *L::Proxima::tok_to_str(L::Proxima::Token tok)
   return "NONE";
 }
 
-// let x := 1;
 void L::Proxima::parse(char c)
 {
   printf("Found operator LET [%c]", c);
@@ -132,11 +131,11 @@ void L::Proxima::parse_variable(char *buf)
 {
   const char *spliter = ":=";
   const char *key = strtok(buf, spliter);
-  printf("\nfound:[%s]\n", buf);
 }
 
 void L::Proxima::run(const char *file)
 {
+  printf("\nProxima Runtime: <%s>\n", file);
   const char *buf = L::Proxima::read_file_content(file);
 
   int length = strlen(buf);

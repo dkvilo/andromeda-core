@@ -5,9 +5,9 @@
 
 struct L::Vec2
 {
-  double x, y;
+  float x, y;
 
-  Vec2(double _x, double _y)
+  Vec2(float _x, float _y)
   {
     this->x = _x;
     this->y = _y;
@@ -18,33 +18,45 @@ struct L::Vec2
   inline L::Vec2 operator+(L::Vec2 *a)
   {
     return L::Vec2{
-      x : this->x + a->x,
-      y : this->y + a->y
-    };
+        this->x + a->x,
+        this->y + a->y};
   }
 
   inline L::Vec2 operator-(L::Vec2 *a)
   {
     return L::Vec2{
-      x : this->x - a->x,
-      y : this->y - a->y
-    };
+        this->x - a->x,
+        this->y - a->y};
   }
 
   inline L::Vec2 operator*(L::Vec2 *a)
   {
     return L::Vec2{
-      x : this->x * a->x,
-      y : this->y * a->y
-    };
+        this->x * a->x,
+        this->y * a->y};
   }
 
   inline L::Vec2 operator/(L::Vec2 *a)
   {
     return L::Vec2{
-      x : this->x / a->x,
-      y : this->y / a->y
-    };
+        this->x / a->x,
+        this->y / a->y};
+  }
+
+  inline L::Vec2 product(L::Vec2 *a)
+  {
+  }
+
+  inline L::Vec2 normalized()
+  {
+  }
+
+  inline L::Vec2 normalize()
+  {
+  }
+
+  inline L::Vec2 magnitude()
+  {
   }
 };
 
