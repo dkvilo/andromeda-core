@@ -64,7 +64,6 @@ int main(int argc, char const *argv[])
 
     for (int i = 0; i < Andromeda::Manager::Registry.size(); i++)
     {
-      printf("%d\n", i);
       auto ent = Andromeda::Manager::GetEntity(i);
       if (!ent->is_static)
       {
