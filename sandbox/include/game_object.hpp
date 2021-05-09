@@ -10,10 +10,6 @@
 struct GameObject : public Andromeda::Entity
 {
 
-private:
-  Andromeda::Entity *c_gizmo;
-
-public:
   GameObject(const char *name)
   {
     this->name = name;
