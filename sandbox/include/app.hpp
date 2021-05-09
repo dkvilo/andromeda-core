@@ -3,41 +3,26 @@
 
 #include "andromeda.hpp"
 #include "window/window.hpp"
-#include "entity/entity.hpp"
 
 #define ANDROMEDA_EDITOR
 #include "editor/editor.hpp"
 
-#define GLM_HAS_UNRESTRICTED_UNIONS
 #include "glm/vec3.hpp"
 
-#include "../../libs/math/functions.hpp"
-#include "../../libs/math/vec2.hpp"
-#include "../../libs/proxima/proxima.hpp"
-#include "../../libs/gl/gl.hpp"
-
-//
-// Do not forget to housekeep the size of the array
-//
-#define ENTITY_MANAGER_SIZE 12
+#include "game_object.hpp"
 
 struct Sandbox
 {
 private:
   Andromeda::Window *my_wind;
-  L::Proxima *proxima_vm;
 
 public:
   int Width, Height;
   double deltaTime;
   double elapsedTime = Andromeda::Window::TimeNow();
-  Andromeda::Entity *EntityRegistry[ENTITY_MANAGER_SIZE];
 
   Sandbox()
   {
-    // Load Proxima VM
-    this->proxima_vm->run("./test.prx");
-
     // Configure Window
     Andromeda::Types::WindowConfog conf{
         "Andromeda Core V: 0.0.101-rc",
@@ -80,7 +65,7 @@ public:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0, width, height, 0.0, 0.0, 100);
+    glOrtho(0.0, width, height, 0.01, 0.0, 10000);
     glViewport(0, 0, width, height);
   }
   /*

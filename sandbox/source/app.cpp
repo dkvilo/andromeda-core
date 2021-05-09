@@ -1,24 +1,6 @@
 #include "app.hpp"
 
-void put_pixel_impl(unsigned int size, const L::Vec2 pos, const glm::vec3 color)
-{
-  glPointSize(size);
-  glTranslatef(pos.x, pos.y, 0);
-  glBegin(GL_POINTS);
-  glVertex3f(pos.x, pos.y, 0.0f);
-  glColor3f(color.r, color.g, color.b);
-  glEnd();
-}
-
-struct Sprite : public Andromeda::Entity
-{
-  void update() override
-  {
-    put_pixel_impl(this->scale, this->position, this->color);
-  };
-};
-
-// Sandbox Draw Implementation
+/// Sandbox Draw Implementation
 void Sandbox::Draw(int width, int height)
 {
   // Extend Base Renderer from sandbox
@@ -34,22 +16,13 @@ int main(int argc, char const *argv[])
   Andromeda::Editor::SetWindow(app.Window());
   Andromeda::Editor::Init();
 
-  Sprite player;
-  player.name = "Player";
+  GameObject player = GameObject("Player");
   player.flag = 0;
-  player.scale = 161.f;
-  player.position = L::Vec2(50.f, 62.f);
-  player.color = glm::vec3(0.985f, 0.145f, 0.442f);
-  Andromeda::Manager::AddEntity(0, &player);
-
-  Sprite enemy;
-  enemy.name = "Enemy";
-  enemy.is_static = true;
-  enemy.flag = 1;
-  enemy.scale = 100;
-  enemy.position = L::Vec2(100.f, 40.f);
-  enemy.color = glm::vec3(1, 1, 1);
-  Andromeda::Manager::AddEntity(1, &enemy);
+  player.AddComponent("RGBColorMaterial", new Andromeda::Components::RGBColorMaterial(glm::vec3(0.951f, 0.070f, 0.381f)));
+  player.AddComponent("Circle2d", new Andromeda::Components::Circle2d());
+  player.AddComponent("Gizmo2d", new Andromeda::Components::Gizmo2d());
+  player.AddComponent("Transfrom", new Andromeda::Components::Transform(glm::vec3(150.f, 162.f, 0.f), glm::vec3(0.f, 0.f, 0.f), 100.f));
+  Andromeda::SceneManager::AddEntity(player.flag, &player);
 
   while (!Andromeda::Window::ShouldClose(app.GetWidnowId()))
   {
@@ -62,12 +35,12 @@ int main(int argc, char const *argv[])
     // Draw in sandbox
     app.Draw(app.Width, app.Height);
 
-    for (int i = 0; i < Andromeda::Manager::Registry.size(); i++)
+    for (int i = 0; i < Andromeda::SceneManager::Registry.size(); i++)
     {
-      auto ent = Andromeda::Manager::GetEntity(i);
-      if (!ent->is_static)
+      auto ent = Andromeda::SceneManager::GetEntity(i);
+      if (!ent->is_enabled)
       {
-        ent->update();
+        ent->update(app.elapsedTime);
       }
     }
 

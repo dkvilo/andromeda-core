@@ -6,7 +6,11 @@ namespace L
   struct Vec2;
   struct Quat;
   struct Proxima;
-  class GL;
+
+  namespace Graphics
+  {
+    class OGL;
+  }
 
   static inline float Lerp(float a, float b, float t);
   static inline float InvLerp(float a, float b, float v);

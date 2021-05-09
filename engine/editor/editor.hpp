@@ -3,6 +3,7 @@
 
 #include "andromeda.hpp"
 #include "entity/entity.hpp"
+#include "component/component.hpp"
 
 #ifdef ANDROMEDA_EDITOR
 #include "imgui.h"
@@ -230,7 +231,7 @@ private:
 
     if (ImGui::BeginTabItem("Hierarchy"))
     {
-      int manager_size = Andromeda::Manager::Registry.size();
+      int manager_size = Andromeda::SceneManager::Registry.size();
       ImGui::Separator();
       ImGui::SetWindowFontScale(1.2);
       ImGui::Text("Entity Count: %d", manager_size);
@@ -238,9 +239,9 @@ private:
       ImGui::Separator();
       for (int i = 0; i < manager_size; i++)
       {
-        auto ent = Andromeda::Manager::GetEntity(i);
+        auto ent = Andromeda::SceneManager::GetEntity(i);
         bool is_open = ImGui::TreeNode(ent->name);
-        if (ent->is_static)
+        if (ent->is_enabled)
         {
           ImGui::SameLine();
           ImGui::Text("Disabled");
@@ -248,10 +249,14 @@ private:
 
         if (is_open)
         {
+
           ImGui::Separator();
-          ImGui::Text("Entity Name: %s", ent->name);
+          ImGui::Checkbox("Disabled", &ent->is_enabled);
+          ImGui::Separator();
           ImGui::Text("Entity flag: %d", ent->flag);
-          Editor::DrawEntityEditableProperties(ent);
+
+          Editor::DrawEntityComponentEditableProperties(ent);
+
           ImGui::TreePop();
         }
       }
@@ -283,20 +288,46 @@ private:
 #endif
   }
 
-  static void DrawEntityEditableProperties(Andromeda::Entity *ent)
+  static void DrawEntityComponentEditableProperties(Andromeda::Entity *ent)
   {
 #ifdef ANDROMEDA_EDITOR
 
-    ImGui::Separator();
-    ImGui::Checkbox("Disabled", &ent->is_static);
-    ImGui::Text("Position");
-    ImGui::SliderFloat("X", &ent->position.x, 1.0f, 1000.0f);
-    ImGui::SliderFloat("Y", &ent->position.y, 1.0f, 1000.0f);
-    ImGui::Separator();
-    ImGui::SliderInt("Scale", &ent->scale, 10, 200);
-    ImGui::Text("Color");
-    ImGui::ColorEdit3("Primary", (float *)&ent->color);
-    ImGui::Separator();
+    Andromeda::Components::Transform *transform = static_cast<Andromeda::Components::Transform *>(ent->GetComponent("Transfrom"));
+    if (transform != nullptr)
+    {
+      ImGui::Separator();
+      ImGui::Text("Component [%s]", transform->name);
+      ImGui::Text("Position");
+      ImGui::SliderFloat("X", &transform->position.x, 0.0f, 1000.0f);
+      ImGui::SliderFloat("Y", &transform->position.y, 0.0f, 1000.0f);
+      ImGui::Text("Scale");
+      ImGui::SliderFloat("xyz", &transform->scale, 0, 400);
+    }
+
+    Andromeda::Components::RGBColorMaterial *color_material = static_cast<Andromeda::Components::RGBColorMaterial *>(ent->GetComponent("RGBColorMaterial"));
+    if (color_material != nullptr)
+    {
+      ImGui::Separator();
+      ImGui::Text("Component [%s]", color_material->name);
+      ImGui::Text("Color");
+      ImGui::ColorEdit3("Primary", (float *)&color_material->color);
+    }
+
+    Andromeda::Components::Gizmo2d *gizmo = static_cast<Andromeda::Components::Gizmo2d *>(ent->GetComponent("Gizmo2d"));
+    if (gizmo != nullptr)
+    {
+      ImGui::Separator();
+      ImGui::Text("Component [%s]", gizmo->name);
+      ImGui::Text("Rotation");
+      ImGui::SliderFloat3("xyz", (float *)&gizmo->rotation, -360, 360);
+      ImGui::SliderFloat("Angle", &gizmo->angle, 0, 360);
+      ImGui::Text("Offset");
+      ImGui::SliderFloat("xy", &gizmo->offset, 0, 100);
+      ImGui::Text("Segments");
+      ImGui::SliderInt("Count", &gizmo->segments, 4, 100);
+      ImGui::Text("Line");
+      ImGui::SliderInt("Width", &gizmo->line_width, 1, 10);
+    }
 #endif
   }
 

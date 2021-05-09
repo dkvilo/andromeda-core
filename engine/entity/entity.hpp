@@ -2,33 +2,60 @@
 #define __ENGINE_ENTITY__
 
 #include <vector>
+#include <string.h>
+
+#include "andromeda.hpp"
 
 #include "../../../libs/math/vec2.hpp"
 #include "../../../libs/math/quat.hpp"
 
-#include "andromeda.hpp"
-#define GLM_HAS_UNRESTRICTED_UNIONS
 #include "glm/vec3.hpp"
 
-//
-// TODO: Refactor the entity, add the component infrastructure
-// THIS IS TEMP IMPLEMENTATION
-// HERE WILL BE ONLY flag, position, orientation, update and components array
-//
-struct Andromeda::Entity
+struct Andromeda::Component
 {
-  int flag;
-  glm::vec3 color;
-  L::Vec2 position;
-  L::Quat orientation;
-  int scale;
-  bool is_selected = false;
-  virtual void update() {}
-  const char *name = "Unnamed Entity";
-  bool is_static = false;
+  const char *name;
+  Andromeda::Entity *comp;
 };
 
-namespace Andromeda::Manager
+class Andromeda::Entity
+{
+
+public:
+  size_t id;
+  bool flag;
+  glm::vec3 position;
+  glm::vec3 rotation;
+
+  bool is_enabled = false;
+  bool is_selected = false;
+  const char *name = "Unnamed Entity";
+
+  std::vector<Andromeda::Component> components;
+
+public:
+  virtual void update(double dt) {}
+  void AddComponent(const char *name, Andromeda::Entity *comp)
+  {
+    Andromeda::Component temp;
+    temp.name = name;
+    temp.comp = comp;
+    this->components.push_back(temp);
+  }
+
+  Andromeda::Entity *GetComponent(const char *name)
+  {
+    for (auto c : this->components)
+    {
+      if (c.name == name)
+      {
+        return c.comp;
+      }
+    }
+    return nullptr;
+  }
+};
+
+namespace Andromeda::SceneManager
 {
 
   std::vector<Andromeda::Entity *> Registry;
@@ -40,35 +67,8 @@ namespace Andromeda::Manager
 
   Andromeda::Entity *GetEntity(int index)
   {
-    return Andromeda::Manager::Registry.at(index);
+    return Andromeda::SceneManager::Registry.at(index);
   }
-
 }
-
-/*
-  Usage:
-
-    struct Door : public Andromeda::Entity
-    {
-      bool is_opened;
-      void update() override;
-    };
-
-    void do_something(Door *d)
-    {
-      d->update();
-    }
-
-    void x(Andromeda::Entity *d)
-    {
-      d->update();
-    }
-
-    void y() {
-      Door d;
-      x(&d);
-    }
-    
-*/
 
 #endif // __ENGINE_ENTITY__
