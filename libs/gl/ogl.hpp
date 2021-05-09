@@ -15,6 +15,9 @@
 
 #include "../libs.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/image.h"
+
 #include <math.h>
 
 class L::Graphics::OGL
@@ -50,6 +53,27 @@ public:
   static void blend_alpha()
   {
     Get().blend_alpha_impl();
+  }
+
+  static size_t new_texture(const char *path, short slot)
+  {
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
+
+    unsigned int texture;
+    glGenTextures(0, &texture);
+
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    stbi_image_free(data);
+    return texture;
   }
 
 private:

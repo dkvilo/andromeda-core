@@ -30,6 +30,7 @@ namespace Andromeda::Components
   struct Circle2d;
   struct Transform;
   struct Gizmo2d;
+  class Texture2d;
 }
 
 namespace Andromeda::Types

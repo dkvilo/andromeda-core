@@ -19,4 +19,18 @@ static inline float L::Remap(float i_max, float i_min, float o_min, float o_max,
   return L::Lerp(o_min, o_max, t);
 }
 
+// XOR Random
+static float random_in_range(float min, float max)
+{
+
+  uint32_t range = 0xf2eec0de;
+
+  range ^= (range << 13);
+  range ^= (range >> 17);
+  range ^= (range << 5);
+
+  float random_zero_to_one = float(range) * (1.0f / 4294967296.0f);
+  return min + (max - min) * random_zero_to_one;
+}
+
 #endif // __ANDROMEDA_LIBS_MATH_FUNCTIONS__

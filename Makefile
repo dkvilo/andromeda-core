@@ -10,6 +10,10 @@ AR := ar rvc
 
 DEPS_DIR := deps
 
+
+STB_DIR						:= $(DEPS_DIR)/stb
+STB_HEADERS				:= -I./$(STB_DIR)
+
 GLAD_DIR					:= $(DEPS_DIR)/glad
 GLAD_HEADERS			:= -I./$(GLAD_DIR)/include
 GLAD_LIB					:= $(GLAD_DIR)/libglad.a
@@ -48,7 +52,7 @@ LINKER_FLAGS 			:= $(GLAD_LIB) $(GLFW_LIB) -lGL -lX11 -ldl -lpthread -lrt \
 
 EDITOR_HEADERS 		:= $(IMGUI_HEADERS) 
 COMMON_HEADERS		:= $(SANDBOX_HEADERS) $(ENGINE_HEADERS) $(GLAD_HEADERS) \
-	$(GLFW_HEADERS) $(GLM_HEADERS) 
+	$(GLFW_HEADERS) $(GLM_HEADERS) $(STB_HEADERS) 
 
 clean:
 	rm -rf *.a *.o
