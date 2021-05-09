@@ -33,7 +33,7 @@ struct GameObject : public Andromeda::Entity
     Andromeda::Components::Gizmo2d *gizmo = static_cast<Andromeda::Components::Gizmo2d *>(this->GetComponent("Gizmo2d"));
     if (gizmo != nullptr)
     {
-      gizmo->position = transform->position;
+      gizmo->position = this->position;
       gizmo->radius = transform->scale;
     }
 
