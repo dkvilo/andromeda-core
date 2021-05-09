@@ -3,7 +3,7 @@
 # Last modified: Sun, May, 02 2021
 #
 
-CCX := g++ -std=c++17
+CCX := g++ -std=c++11
 COMPILER_FLAGS = -w
 
 AR := ar rvc
