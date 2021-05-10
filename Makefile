@@ -20,7 +20,9 @@ GLAD_LIB					:= $(GLAD_DIR)/libglad.a
 
 GLFW_DIR 					:= $(DEPS_DIR)/glfw
 GLFW_HEADERS 			:= -I./$(GLFW_DIR)/include/
-GLFW_LIB 					:= $(GLFW_DIR)/src/libglfw.so.3.4
+GLFW_LINUX_LIB 		:= $(GLFW_DIR)/src/libglfw.so.3.4
+GLFW_MAC_LIB			:= $(GLFW_DIR)/src/libglfw.dylib
+GLFW_LIB					:= $(GLFW_LINUX_LIB)
 
 GLM_DIR						:= $(DEPS_DIR)/glm
 GLM_HEADERS				:= -I./$(GLM_DIR)
@@ -47,8 +49,17 @@ SANDBOX_FlAGS			:= $(COMPILER_FLAGS)
 
 LIB_HEADERS				:= libs/
 
+OS := $(shell uname -s | tr A-Z a-z)
+ifeq ($(OS), darwin)
+	GLFW_LIB := $(GLFW_MAC_LIB) 
+endif 
+
+ifeq ($(OS), linux)
+	GLFW_LIB := $(GLFW_LINUX_LIB)
+endif
+
 LINKER_FLAGS 			:= $(GLAD_LIB) $(GLFW_LIB) -lGL -lX11 -ldl -lpthread -lrt \
-	 -lGLU -lGL -lrt -lXrandr -lXxf86vm -lXi -lXinerama -lX11 -lGLU -lGL
+	 -lGLU -lXrandr -lXxf86vm -lXi -lXinerama
 
 EDITOR_HEADERS 		:= $(IMGUI_HEADERS) 
 COMMON_HEADERS		:= $(SANDBOX_HEADERS) $(ENGINE_HEADERS) $(GLAD_HEADERS) \
@@ -62,7 +73,7 @@ build:
 	&& cd ../.. && cd $(GLAD_DIR) && make build \
 
 editor: 
-	$(CCX) $(SANDBOX_SOURCE)/app.cpp $(IMGUI_SRC) -o $(SANDBOX_OUTPUT)/$(BIN-editor) \
+	$(CCX) -DANDROMEDA_EDITOR $(SANDBOX_SOURCE)/app.cpp $(IMGUI_SRC) -o $(SANDBOX_OUTPUT)/$(BIN-editor) \
 	 $(COMMON_HEADERS) $(EDITOR_HEADERS) $(SANDBOX_FlAGS) $(LINKER_FLAGS)
 
 debug:

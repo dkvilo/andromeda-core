@@ -4,7 +4,6 @@
 #include "andromeda.hpp"
 #include "window/window.hpp"
 
-#define ANDROMEDA_EDITOR
 #include "editor/editor.hpp"
 
 #include "glm/vec3.hpp"
