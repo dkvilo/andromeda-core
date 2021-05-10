@@ -31,9 +31,6 @@ Spec: C++ 11
   make run-editor
 
   # build sandbox layer in release mode (Only Game Layer)
-  # 
-  # It's important to remove ANDROMEDA_EDITOR definition from sandbox/include/app.hpp
-  # 
   make release
 
   # Run release
