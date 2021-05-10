@@ -10,25 +10,31 @@ AR := ar rvc
 
 DEPS_DIR := deps
 
+
+STB_DIR						:= $(DEPS_DIR)/stb
+STB_H     				:= -I./$(STB_DIR)
+
 GLAD_DIR					:= $(DEPS_DIR)/glad
-GLAD_HEADERS			:= -I./$(GLAD_DIR)/include
+GLAD_H      			:= -I./$(GLAD_DIR)/include
 GLAD_LIB					:= $(GLAD_DIR)/libglad.a
 
 GLFW_DIR 					:= $(DEPS_DIR)/glfw
-GLFW_HEADERS 			:= -I./$(GLFW_DIR)/include/
-GLFW_LIB 					:= $(GLFW_DIR)/src/libglfw.so.3.4
+GLFW_H      			:= -I./$(GLFW_DIR)/include/
+GLFW_LINUX_LIB 		:= $(GLFW_DIR)/src/libglfw.so.3.4
+GLFW_MAC_LIB			:= $(GLFW_DIR)/src/libglfw.dylib
+GLFW_LIB					:= $(GLFW_LINUX_LIB)
 
 GLM_DIR						:= $(DEPS_DIR)/glm
-GLM_HEADERS				:= -I./$(GLM_DIR)
+GLM_H     				:= -I./$(GLM_DIR)
 
 IMGUI_DIR					:= $(DEPS_DIR)/imgui
-IMGUI_HEADERS			:= -I./$(IMGUI_DIR)
+IMGUI_H     			:= -I./$(IMGUI_DIR)
 IMGUI_SRC					:= $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_draw.cpp \
 	$(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp \
 	$(IMGUI_DIR)/backends/imgui_impl_glfw.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
 
 ENGINE_DIR 				:= engine
-ENGINE_HEADERS 		:= -I$(ENGINE_DIR)/
+ENGINE_H      		:= -I$(ENGINE_DIR)/
 ENGINE_SOURCE 		:= $(ENGINE_DIR)/source
 
 BIN-editor 				:= build-editor
@@ -36,19 +42,26 @@ BIN-debug					:= build-debug
 BIN-release				:= build-release
 
 SANDBOX_DIR 			:= sandbox
-SANDBOX_HEADERS 	:= -I./$(SANDBOX_DIR)/include
+SANDBOX_H       	:= -I./$(SANDBOX_DIR)/include
 SANDBOX_SOURCE 		:= $(SANDBOX_DIR)/source
 SANDBOX_OUTPUT 		:= build/sandbox
 SANDBOX_FlAGS			:= $(COMPILER_FLAGS)
 
 LIB_HEADERS				:= libs/
 
-LINKER_FLAGS 			:= $(GLAD_LIB) $(GLFW_LIB) -lGL -lX11 -ldl -lpthread -lrt \
-	 -lGLU -lGL -lrt -lXrandr -lXxf86vm -lXi -lXinerama -lX11 -lGLU -lGL
+OS := $(shell uname -s | tr A-Z a-z)
+ifeq ($(OS), darwin)
+	GLFW_LIB := $(GLFW_MAC_LIB) 
+endif 
 
-EDITOR_HEADERS 		:= $(IMGUI_HEADERS) 
-COMMON_HEADERS		:= $(SANDBOX_HEADERS) $(ENGINE_HEADERS) $(GLAD_HEADERS) \
-	$(GLFW_HEADERS) $(GLM_HEADERS) 
+ifeq ($(OS), linux)
+	GLFW_LIB := $(GLFW_LINUX_LIB)
+endif
+
+LINKER_FLAGS 			:= $(GLAD_LIB) $(GLFW_LIB) -ldl
+
+EDITOR_HEADERS 		:= $(IMGUI_H) 
+COMMON_HEADERS		:= $(SANDBOX_H) $(ENGINE_H) $(GLAD_H) $(GLFW_H) $(GLM_H) $(STB_H) 
 
 clean:
 	rm -rf *.a *.o
@@ -58,7 +71,7 @@ build:
 	&& cd ../.. && cd $(GLAD_DIR) && make build \
 
 editor: 
-	$(CCX) $(SANDBOX_SOURCE)/app.cpp $(IMGUI_SRC) -o $(SANDBOX_OUTPUT)/$(BIN-editor) \
+	$(CCX) -DANDROMEDA_EDITOR $(SANDBOX_SOURCE)/app.cpp $(IMGUI_SRC) -o $(SANDBOX_OUTPUT)/$(BIN-editor) \
 	 $(COMMON_HEADERS) $(EDITOR_HEADERS) $(SANDBOX_FlAGS) $(LINKER_FLAGS)
 
 debug:

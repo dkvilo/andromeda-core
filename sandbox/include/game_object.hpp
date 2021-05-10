@@ -23,18 +23,18 @@ struct GameObject : public Andromeda::Entity
       this->position = transform->position;
     }
 
-    Andromeda::Components::Circle2d *circle = static_cast<Andromeda::Components::Circle2d *>(this->GetComponent("Circle2d"));
-    if (circle != nullptr)
+    Andromeda::Components::Shape2d *shape = static_cast<Andromeda::Components::Shape2d *>(this->GetComponent("Shape2d"));
+    if (shape != nullptr)
     {
-      circle->position = this->position;
-      circle->radius = transform->scale;
+      shape->position = this->position;
+      shape->radius = transform->scale;
     }
 
-    Andromeda::Components::Gizmo2d *gizmo = static_cast<Andromeda::Components::Gizmo2d *>(this->GetComponent("Gizmo2d"));
-    if (gizmo != nullptr)
+    Andromeda::Components::Stroke *stroke = static_cast<Andromeda::Components::Stroke *>(this->GetComponent("Stroke"));
+    if (stroke != nullptr)
     {
-      gizmo->position = this->position;
-      gizmo->radius = transform->scale;
+      stroke->position = this->position;
+      stroke->radius = transform->scale;
     }
 
     for (auto item : this->components)

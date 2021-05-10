@@ -26,19 +26,58 @@ struct Andromeda::Components::RGBColorMaterial : Andromeda::Entity
   }
 };
 
-struct Andromeda::Components::Gizmo2d : public Andromeda::Entity
+class Andromeda::Components::Texture2d : public Andromeda::Entity
+{
+private:
+  size_t texture_id;
+
+public:
+  Texture2d(const char *src)
+  {
+    this->texture_id = L::Graphics::OGL::new_texture(src, 0);
+  }
+
+  void update(double dt)
+  {
+    glBindTexture(GL_TEXTURE_2D, this->texture_id);
+    glColor3f(1.0, 1.0, 1.0);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex2f(0, 0);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex2f(300, 0);
+
+    glTexCoord2f(1, 0);
+    glVertex2f(300, 90);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex2f(0, 90);
+    glEnd();
+  }
+
+  ~Texture2d()
+  {
+    glDisable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+  }
+};
+
+struct Andromeda::Components::Stroke : public Andromeda::Entity
 {
   Andromeda::Components::RGBColorMaterial *color_material;
 
-  float offset = 5;
+  float offset = 25;
   float radius = 100;
-  int segments = 11;
-  int line_width = 5;
+  int segments = 100;
+  int line_width = 8;
   float angle = 0.0f;
 
-  Gizmo2d()
+  Stroke()
   {
-    this->name = "Gizmo2d";
+    this->name = "Stroke2d";
+    this->rotation = glm::vec3(0, 0, 0);
     this->color_material = new Andromeda::Components::RGBColorMaterial(glm::vec3(0.121f, 0.917f, 0.566f));
   };
 
@@ -56,20 +95,22 @@ struct Andromeda::Components::Gizmo2d : public Andromeda::Entity
   };
 };
 
-struct Andromeda::Components::Circle2d : public Andromeda::Entity
+struct Andromeda::Components::Shape2d : public Andromeda::Entity
 {
 
-  float radius;
+  float radius = 100.f;
+  int segments = 100;
+  int triangles = 100;
 
-  Circle2d()
+  Shape2d()
   {
-    this->name = "Circle2d";
+    this->name = "Shape2d";
   };
 
   void update(double dt)
   {
     Andromeda_2d_begin(Andromeda_triangle_fan);
-    L::Graphics::OGL::draw_filled_circle(this->position, this->radius, 100, 100);
+    L::Graphics::OGL::draw_filled_circle(this->position, this->radius, this->segments, this->triangles);
     Andromeda_2d_end();
   };
 };

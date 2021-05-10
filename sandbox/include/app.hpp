@@ -4,7 +4,6 @@
 #include "andromeda.hpp"
 #include "window/window.hpp"
 
-#define ANDROMEDA_EDITOR
 #include "editor/editor.hpp"
 
 #include "glm/vec3.hpp"
@@ -65,8 +64,9 @@ public:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0, width, height, 0.01, 0.0, 10000);
+    glOrtho(0.0, width, height, 0, 1, -1);
     glViewport(0, 0, width, height);
+    glEnable(GL_TEXTURE_2D | GL_COLOR);
   }
   /*
 	 *
