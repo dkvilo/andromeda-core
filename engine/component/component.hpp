@@ -64,7 +64,7 @@ public:
   }
 };
 
-struct Andromeda::Components::Gizmo2d : public Andromeda::Entity
+struct Andromeda::Components::Stroke : public Andromeda::Entity
 {
   Andromeda::Components::RGBColorMaterial *color_material;
 
@@ -74,9 +74,9 @@ struct Andromeda::Components::Gizmo2d : public Andromeda::Entity
   int line_width = 8;
   float angle = 0.0f;
 
-  Gizmo2d()
+  Stroke()
   {
-    this->name = "Gizmo2d";
+    this->name = "Stroke2d";
     this->rotation = glm::vec3(0, 0, 0);
     this->color_material = new Andromeda::Components::RGBColorMaterial(glm::vec3(0.121f, 0.917f, 0.566f));
   };
@@ -95,20 +95,22 @@ struct Andromeda::Components::Gizmo2d : public Andromeda::Entity
   };
 };
 
-struct Andromeda::Components::Circle2d : public Andromeda::Entity
+struct Andromeda::Components::Shape2d : public Andromeda::Entity
 {
 
-  float radius;
+  float radius = 100.f;
+  int segments = 100;
+  int triangles = 100;
 
-  Circle2d()
+  Shape2d()
   {
-    this->name = "Circle2d";
+    this->name = "Shape2d";
   };
 
   void update(double dt)
   {
     Andromeda_2d_begin(Andromeda_triangle_fan);
-    L::Graphics::OGL::draw_filled_circle(this->position, this->radius, 100, 100);
+    L::Graphics::OGL::draw_filled_circle(this->position, this->radius, this->segments, this->triangles);
     Andromeda_2d_end();
   };
 };

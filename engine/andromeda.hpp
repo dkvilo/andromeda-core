@@ -27,9 +27,9 @@ namespace Andromeda
 namespace Andromeda::Components
 {
   struct RGBColorMaterial;
-  struct Circle2d;
+  struct Shape2d;
   struct Transform;
-  struct Gizmo2d;
+  struct Stroke;
   class Texture2d;
 }
 

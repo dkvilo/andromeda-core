@@ -296,37 +296,46 @@ private:
     if (transform != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("Component [%s]", transform->name);
-      ImGui::Text("Position");
-      ImGui::SliderFloat("X", &transform->position.x, 0.0f, 1000.0f);
-      ImGui::SliderFloat("Y", &transform->position.y, 0.0f, 1000.0f);
-      ImGui::Text("Scale");
-      ImGui::SliderFloat("xyz", &transform->scale, 0, 400);
+      ImGui::Text("[%s]", transform->name);
+      ImGui::SliderFloat3("Position", (float *)&transform->position, -1000.0f, 1000.f);
+      ImGui::SliderFloat("Scale", &transform->scale, 0, 400);
     }
 
     Andromeda::Components::RGBColorMaterial *color_material = static_cast<Andromeda::Components::RGBColorMaterial *>(ent->GetComponent("RGBColorMaterial"));
     if (color_material != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("Component [%s]", color_material->name);
+      ImGui::Text("[%s]", color_material->name);
       ImGui::Text("Color");
       ImGui::ColorEdit3("Primary", (float *)&color_material->color);
     }
 
-    Andromeda::Components::Gizmo2d *gizmo = static_cast<Andromeda::Components::Gizmo2d *>(ent->GetComponent("Gizmo2d"));
-    if (gizmo != nullptr)
+    Andromeda::Components::Shape2d *shape = static_cast<Andromeda::Components::Shape2d *>(ent->GetComponent("Shape2d"));
+    if (shape != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("Component [%s]", gizmo->name);
-      ImGui::Text("Rotation");
-      ImGui::SliderFloat3("xyz", (float *)&gizmo->rotation, -360, 360);
-      ImGui::SliderFloat("Angle", &gizmo->angle, 0, 360);
-      ImGui::Text("Offset");
-      ImGui::SliderFloat("xy", &gizmo->offset, 0, 100);
+      ImGui::Text("[%s]", shape->name);
       ImGui::Text("Segments");
-      ImGui::SliderInt("Count", &gizmo->segments, 4, 100);
+      ImGui::SliderInt("Face", &shape->segments, 0, shape->triangles);
+      ImGui::Text("Triangles");
+      ImGui::SliderInt("Max Triangles", &shape->triangles, 3, 100);
+    }
+
+    Andromeda::Components::Stroke *stroke = static_cast<Andromeda::Components::Stroke *>(ent->GetComponent("Stroke"));
+    if (stroke != nullptr)
+    {
+      ImGui::Separator();
+      ImGui::Text("[%s]", stroke->name);
+      ImGui::Text("Rotation");
+      ImGui::SliderFloat3("xyz", (float *)&stroke->rotation, -1, 1);
+      ImGui::SliderFloat("Angle", &stroke->angle, -360, 360);
+      ImGui::Text("Offset");
+      ImGui::SliderFloat("xy", &stroke->offset, 0, 100);
+      ImGui::Text("Segments");
+      ImGui::SliderInt("Count", &stroke->segments, 3, 100);
       ImGui::Text("Line");
-      ImGui::SliderInt("Width", &gizmo->line_width, 1, 10);
+      ImGui::SliderInt("Width", &stroke->line_width, 1, 10);
+      ImGui::ColorEdit3("Border", (float *)&stroke->color_material->color);
     }
 #endif
   }

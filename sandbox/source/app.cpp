@@ -18,10 +18,9 @@ int main(int argc, char const *argv[])
 
   GameObject player = GameObject("Player");
   player.flag = 0;
-  player.AddComponent("Texture2d", new Andromeda::Components::Texture2d("./assets/texture/01.jpg"));
   player.AddComponent("RGBColorMaterial", new Andromeda::Components::RGBColorMaterial(glm::vec3(0.951f, 0.070f, 0.381f)));
-  player.AddComponent("Circle2d", new Andromeda::Components::Circle2d());
-  player.AddComponent("Gizmo2d", new Andromeda::Components::Gizmo2d());
+  player.AddComponent("Shape2d", new Andromeda::Components::Shape2d());
+  player.AddComponent("Stroke", new Andromeda::Components::Stroke());
   player.AddComponent("Transfrom", new Andromeda::Components::Transform(glm::vec3(150.f, 162.f, 0.f), glm::vec3(0.f, 0.f, 0.f), 100.f));
   Andromeda::SceneManager::AddEntity(player.flag, &player);
 
