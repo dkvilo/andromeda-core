@@ -4,7 +4,7 @@
 #
 
 CCX := g++ -std=c++11
-COMPILER_FLAGS = -w
+COMPILER_FLAGS = -w -no-pie
 
 AR := ar rvc
 
