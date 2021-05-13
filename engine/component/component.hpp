@@ -1,4 +1,3 @@
-
 #ifndef ANDROMEDA_LIBS_COMPONENTS
 #define ANDROMEDA_LIBS_COMPONENTS
 
@@ -8,7 +7,7 @@
 #include "entity/entity.hpp"
 
 #include "../libs/libs.hpp"
-#include "../libs/gl/ogl.hpp"
+#include "../libs/opengl/gl.hpp"
 
 struct Andromeda::Components::RGBColorMaterial : Andromeda::Entity
 {
@@ -22,7 +21,7 @@ struct Andromeda::Components::RGBColorMaterial : Andromeda::Entity
 
   void update(double dt)
   {
-    L::Graphics::OGL::fill_color(this->color);
+    L::Graphics::OpenGL::fill_color(this->color);
   }
 };
 
@@ -34,7 +33,7 @@ private:
 public:
   Texture2d(const char *src)
   {
-    this->texture_id = L::Graphics::OGL::new_texture(src, 0);
+    // this->texture_id = L::Graphics::OpenGL::new_texture(src);
   }
 
   void update(double dt)
@@ -90,7 +89,7 @@ struct Andromeda::Components::Stroke : public Andromeda::Entity
     }
     Andromeda_2d_begin(Andromeda_line_loop);
     this->color_material->update(dt);
-    L::Graphics::OGL::draw_circle(this->position, this->radius + this->offset, this->segments);
+    L::Graphics::OpenGL::draw_circle(this->position, this->radius + this->offset, this->segments);
     Andromeda_2d_end();
   };
 };
@@ -110,7 +109,7 @@ struct Andromeda::Components::Shape2d : public Andromeda::Entity
   void update(double dt)
   {
     Andromeda_2d_begin(Andromeda_triangle_fan);
-    L::Graphics::OGL::draw_filled_circle(this->position, this->radius, this->segments, this->triangles);
+    L::Graphics::OpenGL::draw_filled_circle(this->position, this->radius, this->segments, this->triangles);
     Andromeda_2d_end();
   };
 };

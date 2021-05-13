@@ -1,9 +1,12 @@
-#ifndef ANDROMEDA_EDITOR_SPACE_HPP
-#define ANDROMEDA_EDITOR_SPACE_HPP
+#ifndef __ANDROMEDA_EDITOR_SPACE_HPP__
+#define __ANDROMEDA_EDITOR_SPACE_HPP__
 
 #include "andromeda.hpp"
 #include "entity/entity.hpp"
 #include "component/component.hpp"
+
+// // TODO: Remove before push
+// #define ANDROMEDA_EDITOR
 
 #ifdef ANDROMEDA_EDITOR
 #include "imgui.h"
@@ -21,6 +24,7 @@ private:
   const char *glsl_version = "#version 130";
   bool show_editable_state = false;
   int selected_ent_index = 0;
+  Andromeda::Entity *selected_entity;
 
 public:
   static void Init()
@@ -189,7 +193,6 @@ private:
     ImGui::End(); // End of the Dockspace
 
     Editor::DrawEntityManagerTool();
-
     Editor::DrawProximaCommandLineTool();
 
     ImGui::Render();
@@ -237,6 +240,7 @@ private:
       ImGui::Text("Entity Count: %d", manager_size);
       ImGui::SetWindowFontScale(1);
       ImGui::Separator();
+
       for (int i = 0; i < manager_size; i++)
       {
         auto ent = Andromeda::SceneManager::GetEntity(i);
@@ -246,20 +250,19 @@ private:
           ImGui::SameLine();
           ImGui::Text("Disabled");
         }
-
         if (is_open)
         {
+          if (this->selected_entity != nullptr)
+          {
+            this->selected_entity = nullptr;
+          }
 
-          ImGui::Separator();
-          ImGui::Checkbox("Disabled", &ent->is_enabled);
-          ImGui::Separator();
-          ImGui::Text("Entity flag: %d", ent->flag);
-
-          Editor::DrawEntityComponentEditableProperties(ent);
-
+          this->show_editable_state = true;
+          this->selected_entity = ent;
           ImGui::TreePop();
         }
       }
+
       ImGui::EndTabItem();
     }
 
@@ -285,12 +288,26 @@ private:
 
     ImGui::EndTabBar(); // End Entity Manager Tool
     ImGui::End();
+
+    ImGui::Begin("Inspector");
+    if (this->show_editable_state && this->selected_entity != nullptr)
+    {
+      Editor::DrawEntityComponentEditableProperties(this->selected_entity);
+    }
+    ImGui::End();
 #endif
   }
 
   static void DrawEntityComponentEditableProperties(Andromeda::Entity *ent)
   {
 #ifdef ANDROMEDA_EDITOR
+
+    ASSERT(ent, "Entity was not initialized", NULL);
+
+    ImGui::Separator();
+    ImGui::Checkbox("Disabled", &ent->is_enabled);
+    ImGui::Separator();
+    ImGui::Text("Entity flag: %d", ent->flag);
 
     Andromeda::Components::Transform *transform = static_cast<Andromeda::Components::Transform *>(ent->GetComponent("Transfrom"));
     if (transform != nullptr)
@@ -350,4 +367,4 @@ public:
   Editor(){};
 };
 
-#endif // ANDROMEDA_EDITOR_SPACE_HPP
+#endif // __ANDROMEDA_EDITOR_SPACE_HPP__

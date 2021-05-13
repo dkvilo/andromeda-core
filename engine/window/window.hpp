@@ -28,7 +28,7 @@ public:
 
     {
       int status = (int)glfwInit() == GLFW_TRUE;
-      ASSERT(status, "Error while initializing GLFW");
+      ASSERT(status, "Error while initializing GLFW", NULL);
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -46,7 +46,7 @@ public:
 
     {
       int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-      ASSERT(status, "Failed to initialize OpenGL loader");
+      ASSERT(status, "Failed to initialize OpenGL loader", NULL);
     }
   }
 

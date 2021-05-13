@@ -1,5 +1,5 @@
-#ifndef __ANDROMEDA_LIBS_OGL__
-#define __ANDROMEDA_LIBS_OGL__
+#ifndef __ANDROMEDA_LIBS_OPENGL__
+#define __ANDROMEDA_LIBS_OPENGL__
 
 #define Andromeda_2d_begin glBegin
 #define Andromeda_2d_end glEnd
@@ -20,32 +20,34 @@
 
 #include <math.h>
 
-class L::Graphics::OGL
+using namespace glm;
+
+class L::Graphics::OpenGL
 {
 private:
-  static OGL &Get()
+  static OpenGL &Get()
   {
-    static OGL instance;
+    static OpenGL instance;
     return instance;
   }
 
 public:
-  static void put_pixel(size_t size, const glm::vec3 pos)
+  static void put_pixel(size_t size, const vec3 pos)
   {
     Get().put_pixel_impl(size, pos);
   }
 
-  static void fill_color(glm::vec3 &color)
+  static void fill_color(vec3 &color)
   {
     glColor3f(color.r, color.g, color.b);
   }
 
-  static void draw_circle(glm::vec3 position, float r, int segments)
+  static void draw_circle(vec3 position, float r, int segments)
   {
     Get().draw_circle_impl(position.x, position.y, r, segments);
   }
 
-  static void draw_filled_circle(glm::vec3 position, float r, int segments, int max_triangle)
+  static void draw_filled_circle(vec3 position, float r, int segments, int max_triangle)
   {
     Get().draw_filled_circle_impl(position.x, position.y, r, segments, max_triangle);
   }
@@ -55,25 +57,27 @@ public:
     Get().blend_alpha_impl();
   }
 
-  static size_t new_texture(const char *path, short slot)
+  static void new_texture(const char *path, unsigned int &texture)
   {
     int width, height, nrChannels;
-    unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
+    stbi_set_flip_vertically_on_load(1);
 
-    unsigned int texture;
+    unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
+    ASSERT(data, "(STB_IMAGE): Unable to load texture", NULL);
+
     glGenTextures(0, &texture);
 
-    glActiveTexture(GL_TEXTURE0 + slot);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
-    return texture;
   }
 
 private:
@@ -107,7 +111,7 @@ private:
     }
   }
 
-  void put_pixel_impl(size_t size, const glm::vec3 pos)
+  void put_pixel_impl(size_t size, const vec3 pos)
   {
     glPointSize(size);
     Andromeda_2d_begin(Andromeda_points);
@@ -116,4 +120,4 @@ private:
   }
 };
 
-#endif // __ANDROMEDA_LIBS_OGL__
+#endif // __ANDROMEDA_LIBS_OPENGL__

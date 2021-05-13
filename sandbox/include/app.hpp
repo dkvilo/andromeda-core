@@ -3,8 +3,10 @@
 
 #include "andromeda.hpp"
 #include "window/window.hpp"
-
 #include "editor/editor.hpp"
+
+#include "../libs/fs/fs.hpp"
+#include "../libs/opengl/shader.hpp"
 
 #include "glm/vec3.hpp"
 
@@ -66,7 +68,7 @@ public:
     glLoadIdentity();
     glOrtho(0.0, width, height, 0, 1, -1);
     glViewport(0, 0, width, height);
-    glEnable(GL_TEXTURE_2D | GL_COLOR);
+    glEnable(GL_TEXTURE_2D);
   }
   /*
 	 *

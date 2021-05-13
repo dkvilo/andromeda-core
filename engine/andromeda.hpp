@@ -4,11 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ASSERT(check, msg)                   \
+#define ASSERT(check, msg, ...)              \
   {                                          \
     if (!(check))                            \
     {                                        \
       printf("Assertion failed: %s\n", msg); \
+      if (__VA_ARGS__ != NULL)               \
+      {                                      \
+        printf("\tArg: %s\n", __VA_ARGS__);  \
+      }                                      \
       exit(1);                               \
     }                                        \
   }
