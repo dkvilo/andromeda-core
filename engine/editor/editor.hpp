@@ -5,9 +5,6 @@
 #include "entity/entity.hpp"
 #include "component/component.hpp"
 
-// // TODO: Remove before push
-// #define ANDROMEDA_EDITOR
-
 #ifdef ANDROMEDA_EDITOR
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
