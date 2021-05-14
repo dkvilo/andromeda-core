@@ -7,6 +7,7 @@
 
 #include "../libs/fs/fs.hpp"
 #include "../libs/opengl/shader.hpp"
+#include "../libs/opengl/vertex_buffer.hpp"
 
 #include "glm/vec3.hpp"
 
@@ -66,9 +67,9 @@ public:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0, width, height, 0, 1, -1);
+    // glOrtho(0.0, width, height, 0, 1, -1);
     glViewport(0, 0, width, height);
-    glEnable(GL_TEXTURE_2D);
+    // glEnable(GL_TEXTURE_2D);
   }
   /*
 	 *

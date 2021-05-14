@@ -3,7 +3,7 @@
 
 #include "../libs.hpp"
 
-struct L::Vec2
+struct L::Math::Vec2
 {
   float x, y;
 
@@ -15,47 +15,47 @@ struct L::Vec2
 
   Vec2() {}
 
-  inline L::Vec2 operator+(L::Vec2 *a)
+  inline L::Math::Vec2 operator+(L::Math::Vec2 *a)
   {
-    return L::Vec2{
+    return L::Math::Vec2{
         this->x + a->x,
         this->y + a->y};
   }
 
-  inline L::Vec2 operator-(L::Vec2 *a)
+  inline L::Math::Vec2 operator-(L::Math::Vec2 *a)
   {
-    return L::Vec2{
+    return L::Math::Vec2{
         this->x - a->x,
         this->y - a->y};
   }
 
-  inline L::Vec2 operator*(L::Vec2 *a)
+  inline L::Math::Vec2 operator*(L::Math::Vec2 *a)
   {
-    return L::Vec2{
+    return L::Math::Vec2{
         this->x * a->x,
         this->y * a->y};
   }
 
-  inline L::Vec2 operator/(L::Vec2 *a)
+  inline L::Math::Vec2 operator/(L::Math::Vec2 *a)
   {
-    return L::Vec2{
+    return L::Math::Vec2{
         this->x / a->x,
         this->y / a->y};
   }
 
-  inline L::Vec2 product(L::Vec2 *a)
+  inline L::Math::Vec2 product(L::Math::Vec2 *a)
   {
   }
 
-  inline L::Vec2 normalized()
+  inline L::Math::Vec2 normalized()
   {
   }
 
-  inline L::Vec2 normalize()
+  inline L::Math::Vec2 normalize()
   {
   }
 
-  inline L::Vec2 magnitude()
+  inline L::Math::Vec2 magnitude()
   {
   }
 };

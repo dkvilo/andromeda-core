@@ -19,6 +19,16 @@
 
 namespace Andromeda
 {
+
+  enum RenderingAPI
+  {
+    OpenGL,
+    Metal,
+    WebGL,
+    None
+  };
+
+  class Renderer;
   struct Entity;
   struct Component;
   struct UI;

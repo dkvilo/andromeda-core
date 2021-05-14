@@ -22,12 +22,12 @@
 
 using namespace glm;
 
-class L::Graphics::OpenGL
+class L::Graphics::OpenGL::Legacy
 {
 private:
-  static OpenGL &Get()
+  static Legacy &Get()
   {
-    static OpenGL instance;
+    static Legacy instance;
     return instance;
   }
 

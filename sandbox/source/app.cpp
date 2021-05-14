@@ -32,7 +32,7 @@ int main(int argc, char const *argv[])
   enemy.AddComponent("Transfrom", new Andromeda::Components::Transform(glm::vec3(450.f, 462.f, 0.f), glm::vec3(0.f, 0.f, 0.f), 100.f));
   Andromeda::SceneManager::AddEntity(enemy.flag, &enemy);
 
-  L::Graphics::Shader shader = L::Graphics::Shader(
+  L::Graphics::OpenGL::Shader shader = L::Graphics::OpenGL::Shader(
       "./shaders/basic/color.frag",
       "./shaders/basic/color.vert");
 
@@ -45,10 +45,19 @@ int main(int argc, char const *argv[])
       -0.5,
   };
 
-  unsigned int buffer;
-  glGenBuffers(1, &buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, buffer);
-  glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+  float positions2[6] = {
+      -0.2,
+      -0.2,
+      0.0,
+      0.2,
+      0.2,
+      -0.2,
+  };
+
+  L::Graphics::OpenGL::VertexBuffer vbo = L::Graphics::OpenGL::VertexBuffer(6 * sizeof(float));
+  vbo.SetData(positions, 6 * sizeof(float));
+  vbo.Unbind();
+  vbo.SetData(positions2, 6 * sizeof(float));
 
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void *)0); // next 8 bytes 2 * sizeof(float)
   glEnableVertexAttribArray(0);
@@ -66,8 +75,6 @@ int main(int argc, char const *argv[])
 
     shader.Use();
     glDrawArrays(GL_TRIANGLES, 0, 3);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     for (int i = 0; i < Andromeda::SceneManager::Registry.size(); i++)
     {

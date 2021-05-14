@@ -3,7 +3,7 @@
 
 #include "../libs.hpp"
 
-struct L::Quat
+struct L::Math::Quat
 {
 };
 
