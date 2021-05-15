@@ -1,5 +1,5 @@
-#ifndef ANDROMEDA_LIBS_COMPONENTS
-#define ANDROMEDA_LIBS_COMPONENTS
+#ifndef ANDROMEDA_ENGINE_COMPONENTS
+#define ANDROMEDA_ENGINE_COMPONENTS
 
 #include "andromeda.hpp"
 
@@ -42,7 +42,7 @@ struct Andromeda::Components::Quad : public Andromeda::Entity
 
   Quad()
   {
-    this->name = "Texture2d";
+    this->name = "Quad";
     float positions[18] = {
         -0.1f, -0.1f, 0.0f,
         0.1f, -0.1f, 0.0f,
