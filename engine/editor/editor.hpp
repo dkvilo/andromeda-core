@@ -5,6 +5,8 @@
 #include "entity/entity.hpp"
 #include "component/component.hpp"
 
+#include "../../libs/libs.hpp"
+
 #ifdef ANDROMEDA_EDITOR
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
@@ -31,7 +33,6 @@ public:
 
   static void Update()
   {
-
     Get().update_editor_impl();
   }
 
@@ -302,6 +303,9 @@ private:
     ASSERT(ent, "Entity was not initialized", NULL);
 
     ImGui::Separator();
+    ImGui::Text(ent->name);
+
+    ImGui::Separator();
     ImGui::Checkbox("Disabled", &ent->is_enabled);
     ImGui::Separator();
     ImGui::Text("Entity flag: %d", ent->flag);
@@ -313,6 +317,9 @@ private:
       ImGui::Text("[%s]", transform->name);
       ImGui::SliderFloat3("Position", (float *)&transform->position, -1000.0f, 1000.f);
       ImGui::SliderFloat("Scale", &transform->scale, 0, 400);
+      ImGui::Text("Rotation");
+      ImGui::SliderFloat3("xyz", (float *)&transform->rotation, -1, 1);
+      ImGui::SliderFloat("Angle", &transform->angle, -360, 360);
     }
 
     Andromeda::Components::RGBColorMaterial *color_material = static_cast<Andromeda::Components::RGBColorMaterial *>(ent->GetComponent("RGBColorMaterial"));
@@ -340,9 +347,6 @@ private:
     {
       ImGui::Separator();
       ImGui::Text("[%s]", stroke->name);
-      ImGui::Text("Rotation");
-      ImGui::SliderFloat3("xyz", (float *)&stroke->rotation, -1, 1);
-      ImGui::SliderFloat("Angle", &stroke->angle, -360, 360);
       ImGui::Text("Offset");
       ImGui::SliderFloat("xy", &stroke->offset, 0, 100);
       ImGui::Text("Segments");

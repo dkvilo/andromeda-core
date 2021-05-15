@@ -1,5 +1,8 @@
 #include "app.hpp"
 
+using namespace glm;
+using namespace Andromeda::Components;
+
 /// Sandbox Draw Implementation
 void Sandbox::Draw(int width, int height)
 {
@@ -18,49 +21,27 @@ int main(int argc, char const *argv[])
 
   GameObject player = GameObject("Player");
   player.flag = 0;
-  player.AddComponent("RGBColorMaterial", new Andromeda::Components::RGBColorMaterial(glm::vec3(0.951f, 0.070f, 0.381f)));
-  player.AddComponent("Shape2d", new Andromeda::Components::Shape2d());
-  player.AddComponent("Stroke", new Andromeda::Components::Stroke());
-  player.AddComponent("Transfrom", new Andromeda::Components::Transform(glm::vec3(150.f, 162.f, 0.f), glm::vec3(0.f, 0.f, 0.f), 100.f));
+  player.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
+  player.AddComponent("Shape2d", new Shape2d());
+  player.AddComponent("Stroke", new Stroke());
+  player.AddComponent("Transfrom", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
   Andromeda::SceneManager::AddEntity(player.flag, &player);
 
   GameObject enemy = GameObject("Enemy");
   enemy.flag = 1;
-  enemy.AddComponent("RGBColorMaterial", new Andromeda::Components::RGBColorMaterial(glm::vec3(0.951f, 0.070f, 0.381f)));
-  enemy.AddComponent("Shape2d", new Andromeda::Components::Shape2d());
-  enemy.AddComponent("Stroke", new Andromeda::Components::Stroke());
-  enemy.AddComponent("Transfrom", new Andromeda::Components::Transform(glm::vec3(450.f, 462.f, 0.f), glm::vec3(0.f, 0.f, 0.f), 100.f));
+  enemy.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
+  enemy.AddComponent("Shape2d", new Shape2d());
+  enemy.AddComponent("Stroke", new Stroke());
+  enemy.AddComponent("Transfrom", new Transform(vec3(1.f, 2.f, 0.f), vec3(0.f, 0.f, 0.f), 0.4f));
   Andromeda::SceneManager::AddEntity(enemy.flag, &enemy);
 
-  L::Graphics::OpenGL::Shader shader = L::Graphics::OpenGL::Shader(
-      "./shaders/basic/color.frag",
-      "./shaders/basic/color.vert");
-
-  float positions[6] = {
-      -0.5,
-      -0.5,
-      0.0,
-      0.5,
-      0.5,
-      -0.5,
-  };
-
-  float positions2[6] = {
-      -0.2,
-      -0.2,
-      0.0,
-      0.2,
-      0.2,
-      -0.2,
-  };
-
-  L::Graphics::OpenGL::VertexBuffer vbo = L::Graphics::OpenGL::VertexBuffer(6 * sizeof(float));
-  vbo.SetData(positions, 6 * sizeof(float));
-  vbo.Unbind();
-  vbo.SetData(positions2, 6 * sizeof(float));
-
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void *)0); // next 8 bytes 2 * sizeof(float)
-  glEnableVertexAttribArray(0);
+  GameObject quad = GameObject("Quad");
+  quad.flag = 2;
+  quad.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
+  quad.AddComponent("Texture2d", new Quad());
+  quad.AddComponent("Transfrom", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  quad.AddComponent("Stroke", new Stroke());
+  Andromeda::SceneManager::AddEntity(quad.flag, &quad);
 
   while (!Andromeda::Window::ShouldClose(app.GetWidnowId()))
   {
@@ -72,9 +53,6 @@ int main(int argc, char const *argv[])
 
     // Draw in sandbox
     app.Draw(app.Width, app.Height);
-
-    shader.Use();
-    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     for (int i = 0; i < Andromeda::SceneManager::Registry.size(); i++)
     {

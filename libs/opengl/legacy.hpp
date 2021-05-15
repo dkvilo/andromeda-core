@@ -14,6 +14,7 @@
 #define Andromeda_quads GL_QUADS
 
 #include "../libs.hpp"
+#include "../math/functions.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/image.h"
@@ -89,22 +90,19 @@ private:
 
   void draw_filled_circle_impl(float cx, float cy, float r, int segments, int max_triangle)
   {
-    double twicePi = 2.0 * 3.142;
-
     glVertex2f(cx, cy);
     for (size_t i = 0; i <= segments; i++)
     {
       glVertex2f(
-          (cx + (r * cos(i * twicePi / max_triangle))), (cy + (r * sin(i * twicePi / max_triangle))));
+          (cx + (r * cos(i * L::Math::TWO_PI / max_triangle))), (cy + (r * sin(i * L::Math::TWO_PI / max_triangle))));
     }
   }
 
   void draw_circle_impl(float cx, float cy, float r, int segments)
   {
-
     for (int i = 0; i < segments; i++)
     {
-      float theta = 2.0f * 3.1415926f * float(i) / float(segments);
+      float theta = 2.0f * L::Math::PI * float(i) / float(segments);
       float x = r * cosf(theta);
       float y = r * sinf(theta);
       glVertex2f(x + cx, y + cy);

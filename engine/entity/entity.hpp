@@ -1,16 +1,10 @@
 #ifndef __ENGINE_ENTITY__
 #define __ENGINE_ENTITY__
 
-#include <vector>
-#include <string.h>
-
 #include "andromeda.hpp"
-
-#include "../../../libs/math/vec2.hpp"
-#include "../../../libs/math/quat.hpp"
-
 #include "glm/vec3.hpp"
 
+#include <vector>
 struct Andromeda::Component
 {
   const char *name;

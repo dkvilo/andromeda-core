@@ -2,7 +2,9 @@
 #define __ANDROMEDA_LIBS_OPENGL_SHADER__
 
 #include <vector>
+
 #include "../libs.hpp"
+#include "../fs/fs.hpp"
 
 class L::Graphics::OpenGL::Shader
 {
@@ -12,6 +14,7 @@ private:
   unsigned int fragmentShader;
 
 public:
+  Shader() = default;
   Shader(const char *frag, const char *vert)
   {
     this->fragmentShader = this->Compile(L::Fs::ReadFileContent(frag), GL_FRAGMENT_SHADER);
@@ -42,11 +45,11 @@ private:
       int maxLength = 0;
       glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
-      std::vector<char> infoLog(maxLength);
-      glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+      std::vector<char> log(maxLength);
+      glGetShaderInfoLog(shader, maxLength, &maxLength, &log[0]);
 
       glDeleteShader(shader);
-      ASSERT(NULL, infoLog.data(), "SHADER_COMPILATION_ERROR");
+      ASSERT(NULL, log.data(), "SHADER_COMPILATION_ERROR");
     }
 
     return shader;

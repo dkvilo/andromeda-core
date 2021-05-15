@@ -5,12 +5,7 @@
 #include "window/window.hpp"
 #include "editor/editor.hpp"
 
-#include "../libs/fs/fs.hpp"
-#include "../libs/opengl/shader.hpp"
-#include "../libs/opengl/vertex_buffer.hpp"
-
 #include "glm/vec3.hpp"
-
 #include "game_object.hpp"
 
 struct Sandbox
@@ -26,11 +21,7 @@ public:
   Sandbox()
   {
     // Configure Window
-    Andromeda::Types::WindowConfog conf{
-        "Andromeda Core V: 0.0.101-rc",
-        1080,
-        720,
-    };
+    Andromeda::Types::WindowConfog conf{"Andromeda", 1080, 720};
 
     // Create new Window
     this->my_wind = new Andromeda::Window(&conf);
@@ -65,11 +56,15 @@ public:
   static void BaseRenderer(int width, int height)
   {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    // glOrtho(0.0, width, height, 0, 1, -1);
-    glViewport(0, 0, width, height);
-    // glEnable(GL_TEXTURE_2D);
+
+    float aspect = (float)width / (float)height;
+    glOrtho(-aspect, aspect, -1, 1, 1, -1);
+
+    glEnable(GL_TEXTURE_2D);
   }
   /*
 	 *

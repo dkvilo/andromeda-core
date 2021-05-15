@@ -4,8 +4,9 @@
 #include "andromeda.hpp"
 #include "entity/entity.hpp"
 #include "component/component.hpp"
-
 #include "../../libs/math/functions.hpp"
+
+using namespace Andromeda::Components;
 
 struct GameObject : public Andromeda::Entity
 {
@@ -17,24 +18,35 @@ struct GameObject : public Andromeda::Entity
 
   void update(double dt)
   {
-    Andromeda::Components::Transform *transform = static_cast<Andromeda::Components::Transform *>(this->GetComponent("Transfrom"));
+    Transform *transform = static_cast<Transform *>(this->GetComponent("Transfrom"));
     if (transform != nullptr)
     {
       this->position = transform->position;
     }
 
-    Andromeda::Components::Shape2d *shape = static_cast<Andromeda::Components::Shape2d *>(this->GetComponent("Shape2d"));
+    Shape2d *shape = static_cast<Shape2d *>(this->GetComponent("Shape2d"));
     if (shape != nullptr)
     {
       shape->position = this->position;
       shape->radius = transform->scale;
+      shape->rotation = transform->rotation;
+      shape->angle = transform->angle;
     }
 
-    Andromeda::Components::Stroke *stroke = static_cast<Andromeda::Components::Stroke *>(this->GetComponent("Stroke"));
+    Stroke *stroke = static_cast<Stroke *>(this->GetComponent("Stroke"));
     if (stroke != nullptr)
     {
       stroke->position = this->position;
       stroke->radius = transform->scale;
+      stroke->rotation = transform->rotation;
+      stroke->angle = transform->angle;
+    }
+
+    Quad *quad = static_cast<Quad *>(this->GetComponent("Quad"));
+    if (quad != nullptr)
+    {
+      quad->position = transform->position;
+      quad->rotation = transform->rotation;
     }
 
     for (auto item : this->components)

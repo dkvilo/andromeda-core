@@ -4,18 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ASSERT(check, msg, ...)              \
-  {                                          \
-    if (!(check))                            \
-    {                                        \
-      printf("Assertion failed: %s\n", msg); \
-      if (__VA_ARGS__ != NULL)               \
-      {                                      \
-        printf("\tArg: %s\n", __VA_ARGS__);  \
-      }                                      \
-      exit(1);                               \
-    }                                        \
-  }
+#include "glad/glad.h"
 
 namespace Andromeda
 {
@@ -44,7 +33,7 @@ namespace Andromeda::Components
   struct Shape2d;
   struct Transform;
   struct Stroke;
-  class Texture2d;
+  struct Quad;
 }
 
 namespace Andromeda::Types

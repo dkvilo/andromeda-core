@@ -2,7 +2,6 @@
 #define __ANDROMEDA_LIBS_OPENGL_INDEX_BUFFER__
 
 #include "../libs.hpp"
-#include "glad/gl.h"
 
 class L::Graphics::OpenGL::IndexBuffer
 {

@@ -1,6 +1,19 @@
 #ifndef __ANDROMEDA_LIBS__
 #define __ANDROMEDA_LIBS__
 
+#define ASSERT(check, msg, ...)              \
+  {                                          \
+    if (!(check))                            \
+    {                                        \
+      printf("Assertion failed: %s\n", msg); \
+      if (__VA_ARGS__ != NULL)               \
+      {                                      \
+        printf("\tArg: %s\n", __VA_ARGS__);  \
+      }                                      \
+      exit(1);                               \
+    }                                        \
+  }
+
 namespace L
 {
 
@@ -24,6 +37,9 @@ namespace L
     struct Vec2;
     struct Quat;
     struct Proxima;
+
+    static const double PI = 3.1415926f;
+    static const double TWO_PI = L::Math::PI * 2.0;
     static inline float Lerp(float a, float b, float t);
     static inline float InvLerp(float a, float b, float v);
     static inline float Remap(float i_max, float i_min, float o_min, float o_max, float v);
