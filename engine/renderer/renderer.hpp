@@ -45,9 +45,14 @@ public:
 
   void Submit(const void *data, size_t size, uint32_t count, size_t vertex_offset)
   {
-    vbo.SetData(data, size);
+    this->vbo.SetData(data, size);
     glVertexAttribPointer(0, count, GL_FLOAT, GL_FALSE, vertex_offset, (void *)0); // next 12 bytes 3 * sizeof(float)
     glEnableVertexAttribArray(0);
+  }
+
+  void ResetSubmitton()
+  {
+    this->vbo.Unbind();
   }
 
   void Draw()

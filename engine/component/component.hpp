@@ -32,41 +32,6 @@ struct Andromeda::Components::RGBColorMaterial : Andromeda::Entity
   }
 };
 
-struct Andromeda::Components::Quad : public Andromeda::Entity
-{
-
-  float height = 0.0f;
-  float width = 0.0f;
-
-  Andromeda::Renderer renderer;
-
-  Quad()
-  {
-    this->name = "Quad";
-    float positions[18] = {
-        -0.1f, -0.1f, 0.0f,
-        0.1f, -0.1f, 0.0f,
-        -0.1f, 0.1f, 0.0f,
-
-        -0.1f, 0.1f, 0.0f,
-        0.1f, -0.1f, 0.0f,
-        0.1f, 0.1f, 0.0f};
-
-    this->renderer.Init(
-        OpenGL::Shader(
-            "./shaders/basic/color.frag",
-            "./shaders/basic/color.vert"),
-        OpenGL::VertexBuffer(18 * sizeof(float)));
-
-    this->renderer.Submit(positions, 18 * sizeof(float), 3, 3 * sizeof(float));
-  };
-
-  void update(double dt)
-  {
-    this->renderer.Draw();
-  };
-};
-
 struct Andromeda::Components::Stroke : public Andromeda::Entity
 {
   RGBColorMaterial *color_material;
@@ -140,6 +105,39 @@ struct Andromeda::Components::Transform : public Andromeda::Entity
     this->scale = scale;
   };
   void update(double dt){};
+};
+
+struct Andromeda::Components::Quad : public Andromeda::Entity
+{
+
+  Andromeda::Renderer renderer;
+
+  Quad()
+  {
+    this->name = "Quad";
+
+    this->renderer.Init(
+        OpenGL::Shader("./shaders/basic/color.frag", "./shaders/basic/color.vert"),
+        OpenGL::VertexBuffer(18 * sizeof(float)));
+  };
+
+  void update(double dt)
+  {
+
+    this->renderer.ResetSubmitton();
+
+    float positions[18] = {
+        -0.1f + this->position.x, -0.1f + this->position.y, 0.0f,
+        0.1f + this->position.x, -0.1f + this->position.y, 0.0f,
+        -0.1 + this->position.x, 0.1f + this->position.y, 0.0f,
+
+        -0.1f + this->position.x, 0.1f + this->position.y, 0.0f,
+        0.1f + this->position.x, -0.1f + this->position.y, 0.0f,
+        0.1f + this->position.x, 0.1f + this->position.y, 0.0f};
+
+    this->renderer.Submit(positions, 18 * sizeof(float), 3, 3 * sizeof(float));
+    this->renderer.Draw();
+  };
 };
 
 #endif

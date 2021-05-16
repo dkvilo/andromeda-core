@@ -4,7 +4,9 @@
 #include "andromeda.hpp"
 #include "glm/vec3.hpp"
 
+#include <string>
 #include <vector>
+
 struct Andromeda::Component
 {
   const char *name;
@@ -15,13 +17,12 @@ class Andromeda::Entity
 {
 
 public:
-  size_t id;
-  bool flag;
+  bool flag = 1;
+
+  std::string id;
   glm::vec3 position;
   glm::vec3 rotation;
 
-  bool is_enabled = false;
-  bool is_selected = false;
   const char *name = "Unnamed Entity";
 
   std::vector<Andromeda::Component> components;
@@ -54,7 +55,7 @@ namespace Andromeda::SceneManager
 
   std::vector<Andromeda::Entity *> Registry;
 
-  void AddEntity(int index, Entity *ent)
+  void AddEntity(Entity *ent)
   {
     Registry.push_back(ent);
   }

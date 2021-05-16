@@ -45,6 +45,12 @@ namespace L
     static inline float Remap(float i_max, float i_min, float o_min, float o_max, float v);
     static inline float RnR(float min, float max);
   }
+
+  namespace Util
+  {
+    class UUID;
+  }
+
 }
 
 #endif // __ANDROMEDA_LIBS__

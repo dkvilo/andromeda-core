@@ -212,9 +212,8 @@ private:
   static void DrawProximaCommandLineTool()
   {
 #ifdef ANDROMEDA_EDITOR
-
     ImGui::Begin("Proxima Command Line Tool");
-    static char str0[128] = "Hello, World";
+    static char str0[128] = "@load_scene sandbox_01";
     ImGui::PushItemWidth(-1);
     ImGui::LogText(str0);
     ImGui::InputText("Proxima VM", str0, IM_ARRAYSIZE(str0));
@@ -243,7 +242,7 @@ private:
       {
         auto ent = Andromeda::SceneManager::GetEntity(i);
         bool is_open = ImGui::TreeNode(ent->name);
-        if (ent->is_enabled)
+        if (!ent->flag)
         {
           ImGui::SameLine();
           ImGui::Text("Disabled");
@@ -306,17 +305,17 @@ private:
     ImGui::Text(ent->name);
 
     ImGui::Separator();
-    ImGui::Checkbox("Disabled", &ent->is_enabled);
+    ImGui::Checkbox("Enabled", &ent->flag);
     ImGui::Separator();
-    ImGui::Text("Entity flag: %d", ent->flag);
+    ImGui::Text("ID: %s", ent->id.c_str());
 
     Andromeda::Components::Transform *transform = static_cast<Andromeda::Components::Transform *>(ent->GetComponent("Transfrom"));
     if (transform != nullptr)
     {
       ImGui::Separator();
       ImGui::Text("[%s]", transform->name);
-      ImGui::SliderFloat3("Position", (float *)&transform->position, -1000.0f, 1000.f);
-      ImGui::SliderFloat("Scale", &transform->scale, 0, 400);
+      ImGui::SliderFloat3("Position", (float *)&transform->position, -10.0f, 10.f);
+      ImGui::SliderFloat("Scale", &transform->scale, 0, 10);
       ImGui::Text("Rotation");
       ImGui::SliderFloat3("xyz", (float *)&transform->rotation, -1, 1);
       ImGui::SliderFloat("Angle", &transform->angle, -360, 360);
@@ -340,6 +339,13 @@ private:
       ImGui::SliderInt("Face", &shape->segments, 0, shape->triangles);
       ImGui::Text("Triangles");
       ImGui::SliderInt("Max Triangles", &shape->triangles, 3, 100);
+    }
+
+    Andromeda::Components::Quad *quad = static_cast<Andromeda::Components::Quad *>(ent->GetComponent("Quad"));
+    if (quad != nullptr)
+    {
+      ImGui::Separator();
+      ImGui::Text("[%s]", quad->name);
     }
 
     Andromeda::Components::Stroke *stroke = static_cast<Andromeda::Components::Stroke *>(ent->GetComponent("Stroke"));

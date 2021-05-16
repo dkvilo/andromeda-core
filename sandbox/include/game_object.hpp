@@ -5,8 +5,10 @@
 #include "entity/entity.hpp"
 #include "component/component.hpp"
 #include "../../libs/math/functions.hpp"
+#include "../../libs/util/uuid.hpp";
 
 using namespace Andromeda::Components;
+using namespace L::Util;
 
 struct GameObject : public Andromeda::Entity
 {
@@ -14,6 +16,7 @@ struct GameObject : public Andromeda::Entity
   GameObject(const char *name)
   {
     this->name = name;
+    this->id = UUID().V1();
   }
 
   void update(double dt)
@@ -45,7 +48,7 @@ struct GameObject : public Andromeda::Entity
     Quad *quad = static_cast<Quad *>(this->GetComponent("Quad"));
     if (quad != nullptr)
     {
-      quad->position = transform->position;
+      quad->position = this->position;
       quad->rotation = transform->rotation;
     }
 

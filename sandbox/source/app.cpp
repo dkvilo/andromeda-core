@@ -20,28 +20,25 @@ int main(int argc, char const *argv[])
   Andromeda::Editor::Init();
 
   GameObject player = GameObject("Player");
-  player.flag = 0;
   player.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
   player.AddComponent("Shape2d", new Shape2d());
   player.AddComponent("Stroke", new Stroke());
   player.AddComponent("Transfrom", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-  Andromeda::SceneManager::AddEntity(player.flag, &player);
+  Andromeda::SceneManager::AddEntity(&player);
 
   GameObject enemy = GameObject("Enemy");
-  enemy.flag = 1;
   enemy.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
   enemy.AddComponent("Shape2d", new Shape2d());
   enemy.AddComponent("Stroke", new Stroke());
   enemy.AddComponent("Transfrom", new Transform(vec3(1.f, 2.f, 0.f), vec3(0.f, 0.f, 0.f), 0.4f));
-  Andromeda::SceneManager::AddEntity(enemy.flag, &enemy);
+  Andromeda::SceneManager::AddEntity(&enemy);
 
   GameObject quad = GameObject("Quad");
-  quad.flag = 2;
   quad.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
-  quad.AddComponent("Texture2d", new Quad());
+  quad.AddComponent("Quad", new Quad());
   quad.AddComponent("Transfrom", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
   quad.AddComponent("Stroke", new Stroke());
-  Andromeda::SceneManager::AddEntity(quad.flag, &quad);
+  Andromeda::SceneManager::AddEntity(&quad);
 
   while (!Andromeda::Window::ShouldClose(app.GetWidnowId()))
   {
@@ -57,7 +54,7 @@ int main(int argc, char const *argv[])
     for (int i = 0; i < Andromeda::SceneManager::Registry.size(); i++)
     {
       auto ent = Andromeda::SceneManager::GetEntity(i);
-      if (!ent->is_enabled)
+      if (ent->flag)
       {
         ent->update(app.elapsedTime);
       }
