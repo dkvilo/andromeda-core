@@ -8,17 +8,17 @@
 class Andromeda::Log
 {
 private:
-  char *m_prefix;
+  char *m_Prefix;
 
 public:
   inline void set_prefix(const char *prefix)
   {
-    this->m_prefix = const_cast<char *>(prefix);
+    m_Prefix = const_cast<char *>(prefix);
   }
 
   inline void Print(const char *message)
   {
-    printf("@[%s]: %s\n", this->m_prefix, message);
+    printf("@[%s]: %s\n", m_Prefix, message);
   }
 };
 

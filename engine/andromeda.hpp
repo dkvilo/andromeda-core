@@ -34,6 +34,8 @@ namespace Andromeda::Components
   struct Transform;
   struct Stroke;
   struct Quad;
+  struct Sphere;
+
 }
 
 namespace Andromeda::Types

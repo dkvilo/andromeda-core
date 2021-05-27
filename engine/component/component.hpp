@@ -140,4 +140,62 @@ struct Andromeda::Components::Quad : public Andromeda::Entity
   };
 };
 
+struct Andromeda::Components::Sphere : public Andromeda::Entity
+{
+
+  float angle = 0.0f;
+  uint32_t segments = 100;
+  float radius = 10.0f;
+
+  Sphere()
+  {
+    this->name = "Sphere";
+  };
+
+  void update(double dt)
+  {
+    glPushMatrix();
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    if (this->angle != 0.0f)
+    {
+      glRotatef(this->angle, this->rotation.x, this->rotation.y, this->rotation.z);
+    }
+
+    // yellow diffuse : color where light hit directly the object's surface
+    float diffuse[] = {1.0f, 1.0f, 0.0f, 1.0f};
+
+    // Yellow ambient : color applied everywhere
+    float ambient[] = {0.f, 0.f, 1.f, 1.000f};
+
+    vec3 lightPosition = this->position + vec3(2.0f, 2.0f, -7.0f);
+
+    // Ambient light component
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+
+    // Diffuse light component
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+
+    //Light position
+    glLightfv(GL_LIGHT0, GL_POSITION, (float *)&(lightPosition));
+
+    //Enable the first light and the lighting mode
+    glEnable(GL_LIGHTING);
+
+    Andromeda_2d_begin(Andromeda_triangles);
+    // vec3 color(1, 0, 0);
+    // OpenGL::Legacy::fill_color(color);
+    OpenGL::Legacy::draw_sphere(this->position, this->segments, this->radius);
+    Andromeda_2d_end();
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glDisable(GL_LIGHT0);
+    glDisable(GL_LIGHTING);
+    glPopMatrix();
+  };
+};
+
 #endif

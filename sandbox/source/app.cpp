@@ -40,6 +40,12 @@ int main(int argc, char const *argv[])
   quad.AddComponent("Stroke", new Stroke());
   Andromeda::SceneManager::AddEntity(&quad);
 
+  GameObject ball = GameObject("Ball");
+  ball.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
+  ball.AddComponent("Transfrom", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  ball.AddComponent("Sphere", new Sphere());
+  Andromeda::SceneManager::AddEntity(&ball);
+
   while (!Andromeda::Window::ShouldClose(app.GetWidnowId()))
   {
     // Leasent for global events

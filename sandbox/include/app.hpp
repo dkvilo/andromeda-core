@@ -62,7 +62,7 @@ public:
     glLoadIdentity();
 
     float aspect = (float)width / (float)height;
-    glOrtho(-aspect, aspect, -1, 1, 1, -1);
+    glOrtho(-aspect, aspect, -1, 1, 0.00001, -100000);
 
     glEnable(GL_TEXTURE_2D);
   }

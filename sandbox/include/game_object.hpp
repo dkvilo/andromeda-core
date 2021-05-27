@@ -52,6 +52,15 @@ struct GameObject : public Andromeda::Entity
       quad->rotation = transform->rotation;
     }
 
+    Sphere *sphere = static_cast<Sphere *>(this->GetComponent("Sphere"));
+    if (sphere != nullptr)
+    {
+      sphere->position = this->position;
+      sphere->radius = transform->scale;
+      sphere->rotation = transform->rotation;
+      sphere->angle = transform->angle * dt;
+    }
+
     for (auto item : this->components)
     {
       item.comp->update(dt);

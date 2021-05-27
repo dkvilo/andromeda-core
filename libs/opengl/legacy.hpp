@@ -58,6 +58,11 @@ public:
     Get().blend_alpha_impl();
   }
 
+  static void draw_sphere(vec3 position, uint32_t segments, float r)
+  {
+    Get().draw_sphere_impl(position, segments, r);
+  }
+
   static void new_texture(const char *path, unsigned int &texture)
   {
     int width, height, nrChannels;
@@ -115,6 +120,65 @@ private:
     Andromeda_2d_begin(Andromeda_points);
     glVertex3f(pos.x, pos.y, pos.z);
     Andromeda_2d_end();
+  }
+
+  void draw_sphere_impl(vec3 position, u_int32_t segments, float radius)
+  {
+
+    const int theta = 100;
+
+    for (int lng = 0; lng < segments; lng++)
+      for (int lat = 0; lat < theta; lat++)
+      {
+
+        float d_phi = L::Math::TWO_PI / segments;
+        float d_theta = L::Math::PI / theta;
+
+        double x, y, z;
+
+        x = radius * cos(lng * d_phi) * sin(lat * d_theta) + position.x;
+        y = radius * sin(lng * d_phi) * sin(lat * d_theta) + position.y;
+        z = radius * cos(lat * d_theta) + position.z;
+        glNormal3f(x, y, z);
+        glTexCoord2f(static_cast<float>(lng) / segments, static_cast<float>(lat) / theta);
+        glVertex3f(x, y, z);
+
+        x = radius * cos((lng + 1) * d_phi) * sin(lat * d_theta) + position.x;
+        y = radius * sin((lng + 1) * d_phi) * sin(lat * d_theta) + position.y;
+        z = radius * cos(lat * d_theta) + position.z;
+        glNormal3f(x, y, z);
+        glTexCoord2f(d_phi, 0);
+        glTexCoord2f(static_cast<float>(lng + 1) / segments, static_cast<float>(lat) / theta);
+        glVertex3f(x, y, z);
+
+        x = radius * cos((lng + 1) * d_phi) * sin((lat + 1) * d_theta) + position.x;
+        y = radius * sin((lng + 1) * d_phi) * sin((lat + 1) * d_theta) + position.y;
+        z = radius * cos((lat + 1) * d_theta) + position.z;
+        glNormal3f(x, y, z);
+        glTexCoord2f(static_cast<float>(lng + 1) / segments, static_cast<float>(lat + 1) / theta);
+        glVertex3f(x, y, z);
+
+        x = radius * cos(lng * d_phi) * sin(lat * d_theta) + position.x;
+        y = radius * sin(lng * d_phi) * sin(lat * d_theta) + position.y;
+        z = radius * cos(lat * d_theta) + position.z;
+        glNormal3f(x, y, z);
+        glTexCoord2f(static_cast<float>(lng) / segments, static_cast<float>(lat) / theta);
+        glVertex3f(x, y, z);
+
+        x = radius * cos((lng + 1) * d_phi) * sin((lat + 1) * d_theta) + position.x;
+        y = radius * sin((lng + 1) * d_phi) * sin((lat + 1) * d_theta) + position.y;
+        z = radius * cos((lat + 1) * d_theta) + position.z;
+        glNormal3f(x, y, z);
+        glTexCoord2f(static_cast<float>(lng + 1) / segments, static_cast<float>(lat + 1) / theta);
+        glVertex3f(x, y, z);
+
+        x = radius * cos((lng)*d_phi) * sin((lat + 1) * d_theta) + position.x;
+        y = radius * sin((lng)*d_phi) * sin((lat + 1) * d_theta) + position.y;
+        z = radius * cos((lat + 1) * d_theta) + position.z;
+        glNormal3f(x, y, z);
+        glTexCoord2f(static_cast<float>(lng) / segments, static_cast<float>(lat + 1) / theta);
+        glVertex3f(x, y, z);
+      }
   }
 };
 
