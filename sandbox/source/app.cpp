@@ -33,12 +33,19 @@ int main(int argc, char const *argv[])
   enemy.AddComponent("Transfrom", new Transform(vec3(1.f, 2.f, 0.f), vec3(0.f, 0.f, 0.f), 0.4f));
   Andromeda::SceneManager::AddEntity(&enemy);
 
-  GameObject quad = GameObject("Quad");
+  GameObject quad = GameObject("Test Shape");
   quad.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
   quad.AddComponent("Quad", new Quad());
   quad.AddComponent("Transfrom", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
   quad.AddComponent("Stroke", new Stroke());
   Andromeda::SceneManager::AddEntity(&quad);
+
+  GameObject quad2 = GameObject("Test Shape 2");
+  quad2.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(1.f, 0.f, 0.387f)));
+  quad2.AddComponent("Quad", new Quad());
+  quad2.AddComponent("Transfrom", new Transform(vec3(0.f, 0.5f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  quad2.AddComponent("Stroke", new Stroke());
+  Andromeda::SceneManager::AddEntity(&quad2);
 
   GameObject ball = GameObject("Ball");
   ball.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
