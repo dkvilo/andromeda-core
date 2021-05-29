@@ -249,6 +249,12 @@ private:
         }
         if (is_open)
         {
+          // Just render child component as a simple text for now
+          for (int j = 0; j < ent->components.size(); j++)
+          {
+            ImGui::Text(ent->components[j].name);
+          }
+
           if (this->selected_entity != nullptr)
           {
             this->selected_entity = nullptr;
