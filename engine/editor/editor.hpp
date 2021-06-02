@@ -19,7 +19,7 @@
 class Andromeda::Editor
 {
 private:
-  Andromeda::Window *m_window;
+  Andromeda::Window *m_Window;
   const char *glsl_version = "#version 130";
   bool show_editable_state = false;
   int selected_ent_index = 0;
@@ -48,7 +48,7 @@ public:
 
   void set_window_impl(Andromeda::Window *window)
   {
-    this->m_window = window;
+    m_Window = window;
   }
 
 private:
@@ -142,7 +142,7 @@ private:
     style->WindowTitleAlign = ImVec2(1.0f, 0.5f);
     style->WindowMenuButtonPosition = ImGuiDir_Right;
 
-    ImGui_ImplGlfw_InitForOpenGL(this->m_window->GetId(), true);
+    ImGui_ImplGlfw_InitForOpenGL(m_Window->GetId(), true);
     ImGui_ImplOpenGL3_Init(this->glsl_version);
 #endif
   }
@@ -241,7 +241,7 @@ private:
       for (int i = 0; i < manager_size; i++)
       {
         auto ent = Andromeda::SceneManager::GetEntity(i);
-        bool is_open = ImGui::TreeNode(ent->name);
+        bool is_open = ImGui::TreeNode(ent->m_Name);
         if (!ent->flag)
         {
           ImGui::SameLine();
@@ -250,9 +250,9 @@ private:
         if (is_open)
         {
           // Just render child component as a simple text for now
-          for (int j = 0; j < ent->components.size(); j++)
+          for (int j = 0; j < ent->GetComponents().size(); j++)
           {
-            ImGui::Text(ent->components[j].name);
+            ImGui::Text(ent->GetComponents()[j].name);
           }
 
           if (this->selected_entity != nullptr)
@@ -308,64 +308,64 @@ private:
     ASSERT(ent, "Entity was not initialized", NULL);
 
     ImGui::Separator();
-    ImGui::Text(ent->name);
+    ImGui::Text(ent->m_Name);
 
     ImGui::Separator();
     ImGui::Checkbox("Enabled", &ent->flag);
     ImGui::Separator();
-    ImGui::Text("ID: %s", ent->id.c_str());
+    ImGui::Text("ID: %s", ent->m_ID.c_str());
 
     Andromeda::Components::Transform *transform = static_cast<Andromeda::Components::Transform *>(ent->GetComponent("Transfrom"));
     if (transform != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("[%s]", transform->name);
-      ImGui::SliderFloat3("Position", (float *)&transform->position, -10.0f, 10.f);
-      ImGui::SliderFloat("Scale", &transform->scale, 0, 10);
+      ImGui::Text("[%s]", transform->m_Name);
+      ImGui::SliderFloat3("Position", (float *)&transform->m_Position, -10.0f, 10.f);
+      ImGui::SliderFloat("Scale", &transform->m_Scale, 0, 10);
       ImGui::Text("Rotation");
-      ImGui::SliderFloat3("xyz", (float *)&transform->rotation, -1, 1);
-      ImGui::SliderFloat("Angle", &transform->angle, -360, 360);
+      ImGui::SliderFloat3("xyz", (float *)&transform->m_Rotation, -1, 1);
+      ImGui::SliderFloat("Angle", &transform->m_Angle, -360, 360);
     }
 
     Andromeda::Components::RGBColorMaterial *color_material = static_cast<Andromeda::Components::RGBColorMaterial *>(ent->GetComponent("RGBColorMaterial"));
     if (color_material != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("[%s]", color_material->name);
+      ImGui::Text("[%s]", color_material->m_Name);
       ImGui::Text("Color");
-      ImGui::ColorEdit3("Primary", (float *)&color_material->color);
+      ImGui::ColorEdit3("Primary", (float *)&color_material->m_Color);
     }
 
     Andromeda::Components::Shape2d *shape = static_cast<Andromeda::Components::Shape2d *>(ent->GetComponent("Shape2d"));
     if (shape != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("[%s]", shape->name);
+      ImGui::Text("[%s]", shape->m_Name);
       ImGui::Text("Segments");
-      ImGui::SliderInt("Face", &shape->segments, 0, shape->triangles);
+      ImGui::SliderInt("Face", &shape->m_Segments, 0, shape->m_Triangles);
       ImGui::Text("Triangles");
-      ImGui::SliderInt("Max Triangles", &shape->triangles, 3, 100);
+      ImGui::SliderInt("Max Triangles", &shape->m_Triangles, 3, 100);
     }
 
     Andromeda::Components::Quad *quad = static_cast<Andromeda::Components::Quad *>(ent->GetComponent("Quad"));
     if (quad != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("[%s]", quad->name);
+      ImGui::Text("[%s]", quad->m_Name);
     }
 
     Andromeda::Components::Stroke *stroke = static_cast<Andromeda::Components::Stroke *>(ent->GetComponent("Stroke"));
     if (stroke != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("[%s]", stroke->name);
+      ImGui::Text("[%s]", stroke->m_Name);
       ImGui::Text("Offset");
-      ImGui::SliderFloat("xy", &stroke->offset, 0, 100);
+      ImGui::SliderFloat("xy", &stroke->m_Offset, 0, 100);
       ImGui::Text("Segments");
-      ImGui::SliderInt("Count", &stroke->segments, 3, 100);
+      ImGui::SliderInt("Count", &stroke->m_Segments, 3, 100);
       ImGui::Text("Line");
-      ImGui::SliderInt("Width", &stroke->line_width, 1, 10);
-      ImGui::ColorEdit3("Border", (float *)&stroke->color_material->color);
+      ImGui::SliderInt("Width", &stroke->m_LineWidth, 1, 10);
+      ImGui::ColorEdit3("Border", (float *)&stroke->m_ColorMaterial->m_Color);
     }
 #endif
   }

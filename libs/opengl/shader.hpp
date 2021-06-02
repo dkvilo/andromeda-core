@@ -9,26 +9,26 @@
 class L::Graphics::OpenGL::Shader
 {
 private:
-  unsigned int m_RendererID;
-  unsigned int vertexShader;
-  unsigned int fragmentShader;
+  uint32_t m_RendererID;
+  uint32_t m_VertexShader;
+  uint32_t m_FragmentShader;
 
 public:
   Shader() = default;
   Shader(const char *frag, const char *vert)
   {
-    this->fragmentShader = this->Compile(L::Fs::ReadFileContent(frag), GL_FRAGMENT_SHADER);
-    this->vertexShader = this->Compile(L::Fs::ReadFileContent(vert), GL_VERTEX_SHADER);
+    m_FragmentShader = Compile(L::Fs::ReadFileContent(frag), GL_FRAGMENT_SHADER);
+    m_VertexShader = Compile(L::Fs::ReadFileContent(vert), GL_VERTEX_SHADER);
   }
 
   inline void Use()
   {
-    glUseProgram(this->m_RendererID);
+    glUseProgram(m_RendererID);
   }
 
   unsigned int RendererId()
   {
-    return this->m_RendererID;
+    return m_RendererID;
   };
 
 private:
@@ -55,12 +55,12 @@ private:
     return shader;
   }
 
-  inline void CreateProgram(unsigned int f, unsigned int v)
+  inline void CreateProgram(unsigned int fs, unsigned int vs)
   {
-    this->m_RendererID = glCreateProgram();
-    glAttachShader(this->m_RendererID, f);
-    glAttachShader(this->m_RendererID, v);
-    glLinkProgram(this->m_RendererID);
+    m_RendererID = glCreateProgram();
+    glAttachShader(m_RendererID, fs);
+    glAttachShader(m_RendererID, vs);
+    glLinkProgram(m_RendererID);
   }
 };
 

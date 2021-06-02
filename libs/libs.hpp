@@ -34,8 +34,6 @@ namespace L
   }
   namespace Math
   {
-    struct Vec2;
-    struct Quat;
     struct Proxima;
 
     static const double PI = 3.1415926f;

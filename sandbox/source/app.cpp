@@ -19,33 +19,33 @@ int main(int argc, char const *argv[])
   Andromeda::Editor::SetWindow(app.Window());
   Andromeda::Editor::Init();
 
-  GameObject player = GameObject("Player");
-  player.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
-  player.AddComponent("Shape2d", new Shape2d());
-  player.AddComponent("Stroke", new Stroke());
-  player.AddComponent("Transfrom", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-  Andromeda::SceneManager::AddEntity(&player);
+  // GameObject player = GameObject("Player");
+  // player.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
+  // player.AddComponent("Shape2d", new Shape2d());
+  // player.AddComponent("Stroke", new Stroke());
+  // player.AddComponent("Transfrom", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  // Andromeda::SceneManager::AddEntity(&player);
 
-  GameObject enemy = GameObject("Enemy");
-  enemy.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
-  enemy.AddComponent("Shape2d", new Shape2d());
-  enemy.AddComponent("Stroke", new Stroke());
-  enemy.AddComponent("Transfrom", new Transform(vec3(1.f, 2.f, 0.f), vec3(0.f, 0.f, 0.f), 0.4f));
-  Andromeda::SceneManager::AddEntity(&enemy);
+  // GameObject enemy = GameObject("Enemy");
+  // enemy.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
+  // enemy.AddComponent("Shape2d", new Shape2d());
+  // enemy.AddComponent("Stroke", new Stroke());
+  // enemy.AddComponent("Transfrom", new Transform(vec3(1.f, 2.f, 0.f), vec3(0.f, 0.f, 0.f), 0.4f));
+  // Andromeda::SceneManager::AddEntity(&enemy);
 
-  GameObject quad = GameObject("Test Shape");
-  quad.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
-  quad.AddComponent("Quad", new Quad());
-  quad.AddComponent("Transfrom", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-  quad.AddComponent("Stroke", new Stroke());
-  Andromeda::SceneManager::AddEntity(&quad);
+  // GameObject quad = GameObject("Test Shape");
+  // quad.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
+  // quad.AddComponent("Quad", new Quad());
+  // quad.AddComponent("Transfrom", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  // quad.AddComponent("Stroke", new Stroke());
+  // Andromeda::SceneManager::AddEntity(&quad);
 
-  GameObject quad2 = GameObject("Test Shape 2");
-  quad2.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(1.f, 0.f, 0.387f)));
-  quad2.AddComponent("Quad", new Quad());
-  quad2.AddComponent("Transfrom", new Transform(vec3(0.f, 0.5f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-  quad2.AddComponent("Stroke", new Stroke());
-  Andromeda::SceneManager::AddEntity(&quad2);
+  // GameObject quad2 = GameObject("Test Shape 2");
+  // quad2.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(1.f, 0.f, 0.387f)));
+  // quad2.AddComponent("Quad", new Quad());
+  // quad2.AddComponent("Transfrom", new Transform(vec3(0.f, 0.5f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  // quad2.AddComponent("Stroke", new Stroke());
+  // Andromeda::SceneManager::AddEntity(&quad2);
 
   GameObject ball = GameObject("Ball");
   ball.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
@@ -62,14 +62,14 @@ int main(int argc, char const *argv[])
     app.UpdateTime(Andromeda::Window::TimeNow());
 
     // Draw in sandbox
-    app.Draw(app.Width, app.Height);
+    app.Draw(app.m_Width, app.m_Height);
 
     for (int i = 0; i < Andromeda::SceneManager::Registry.size(); i++)
     {
       auto ent = Andromeda::SceneManager::GetEntity(i);
       if (ent->flag)
       {
-        ent->update(app.elapsedTime);
+        ent->update(app.m_ElapsedTime);
       }
     }
 

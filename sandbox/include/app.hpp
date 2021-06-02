@@ -10,13 +10,10 @@
 
 struct Sandbox
 {
-private:
-  Andromeda::Window *my_wind;
-
 public:
-  int Width, Height;
-  double deltaTime;
-  double elapsedTime = Andromeda::Window::TimeNow();
+  int m_Width, m_Height;
+  double m_DeltaTime;
+  double m_ElapsedTime = Andromeda::Window::TimeNow();
 
   Sandbox()
   {
@@ -24,31 +21,31 @@ public:
     Andromeda::Types::WindowConfog conf{"Andromeda", 1080, 720};
 
     // Create new Window
-    this->my_wind = new Andromeda::Window(&conf);
+    m_Window = new Andromeda::Window(&conf);
 
     // Attach Window Key handler
-    Andromeda::Window::KeyHandler(this->GetWidnowId(), Sandbox::KeyHandler);
+    Andromeda::Window::KeyHandler(GetWidnowId(), Sandbox::KeyHandler);
   }
 
   inline GLFWwindow *const GetWidnowId() const
   {
-    return this->my_wind->GetId();
+    return m_Window->GetId();
   }
 
   inline Andromeda::Window *Window() const
   {
-    return this->my_wind;
+    return m_Window;
   }
 
   void UpdateTime(double ct)
   {
-    this->deltaTime = ct - this->elapsedTime;
-    this->elapsedTime = ct;
+    m_DeltaTime = ct - m_ElapsedTime;
+    m_ElapsedTime = ct;
   }
 
   void Resize()
   {
-    glfwGetWindowSize(this->GetWidnowId(), &this->Width, &this->Height);
+    glfwGetWindowSize(GetWidnowId(), &m_Width, &m_Height);
   }
 
   static void Draw(int width, int height);
@@ -78,6 +75,9 @@ public:
       glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
   }
+
+private:
+  Andromeda::Window *m_Window;
 };
 
 #endif // __SANDBOX_APP__

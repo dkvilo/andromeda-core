@@ -19,31 +19,34 @@ class Andromeda::Entity
 public:
   bool flag = 1;
 
-  std::string id;
-  glm::vec3 position;
-  glm::vec3 rotation;
+  std::string m_ID;
+  glm::vec3 m_Position;
+  glm::vec3 m_Rotation;
 
-  const char *name = "Unnamed Entity";
+  const char *m_Name = "Unnamed Entity";
 
-  std::vector<Andromeda::Component> components;
+private:
+  std::vector<Andromeda::Component> m_Components;
 
 public:
   virtual void update(double dt) {}
   void AddComponent(const char *name, Andromeda::Entity *comp)
   {
-    Andromeda::Component temp;
-    temp.name = name;
-    temp.comp = comp;
-    this->components.push_back(temp);
+    m_Components.push_back(Andromeda::Component{name, comp});
+  }
+
+  std::vector<Andromeda::Component> GetComponents() const
+  {
+    return m_Components;
   }
 
   Andromeda::Entity *GetComponent(const char *name)
   {
-    for (auto c : this->components)
+    for (auto child : m_Components)
     {
-      if (c.name == name)
+      if (child.name == name)
       {
-        return c.comp;
+        return child.comp;
       }
     }
     return nullptr;

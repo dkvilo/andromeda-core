@@ -12,9 +12,9 @@ using namespace L::Graphics;
 class Andromeda::Renderer
 {
 private:
-  Andromeda::RenderingAPI SelectedAPI;
-  mutable OpenGL::Shader shader;
-  mutable OpenGL::VertexBuffer vbo;
+  Andromeda::RenderingAPI m_SelectedAPI;
+  mutable OpenGL::Shader m_Shader;
+  mutable OpenGL::VertexBuffer m_Vbo;
 
 public:
   Renderer()
@@ -24,40 +24,40 @@ public:
      * Set default rendering API to OpenGL
      * 
      */
-    this->SelectedAPI = Andromeda::RenderingAPI::OpenGL;
+    m_SelectedAPI = Andromeda::RenderingAPI::OpenGL;
   }
 
   void UseRenderingAPI(Andromeda::RenderingAPI target)
   {
-    this->SelectedAPI = target;
+    m_SelectedAPI = target;
   }
 
   Andromeda::RenderingAPI GetAPI()
   {
-    return this->SelectedAPI;
+    return m_SelectedAPI;
   }
 
   void Init(const OpenGL::Shader &&shader, const OpenGL::VertexBuffer &&vbo) const
   {
-    this->shader = shader;
-    this->vbo = vbo;
+    m_Shader = shader;
+    m_Vbo = vbo;
   }
 
   void Submit(const void *data, size_t size, uint32_t count, size_t vertex_offset)
   {
-    this->vbo.SetData(data, size);
+    m_Vbo.SetData(data, size);
     glVertexAttribPointer(0, count, GL_FLOAT, GL_FALSE, vertex_offset, (void *)0); // next 12 bytes 3 * sizeof(float)
     glEnableVertexAttribArray(0);
   }
 
   void ResetSubmitton()
   {
-    this->vbo.Unbind();
+    m_Vbo.Unbind();
   }
 
   void Draw()
   {
-    this->shader.Use();
+    m_Shader.Use();
     glDrawArrays(GL_TRIANGLES, 0, 8);
   }
 };

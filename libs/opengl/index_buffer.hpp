@@ -12,14 +12,14 @@ private:
 public:
   IndexBuffer(uint32_t *indices, uint32_t count) : m_Count(count)
   {
-    glCreateBuffers(1, &this->m_RendererID);
-    glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID);
+    glCreateBuffers(1, &m_RendererID);
+    glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     glBufferData(GL_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
   }
 
   void Bind() const
   {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_RendererID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
   }
 
   void Unbind() const
@@ -34,7 +34,7 @@ public:
 
   ~IndexBuffer()
   {
-    glDeleteBuffers(1, &this->m_RendererID);
+    glDeleteBuffers(1, &m_RendererID);
   }
 };
 

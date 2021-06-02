@@ -25,12 +25,6 @@ using namespace glm;
 
 class L::Graphics::OpenGL::Legacy
 {
-private:
-  static Legacy &Get()
-  {
-    static Legacy instance;
-    return instance;
-  }
 
 public:
   static void put_pixel(size_t size, const vec3 pos)
@@ -179,6 +173,13 @@ private:
         glTexCoord2f(static_cast<float>(lng) / segments, static_cast<float>(lat + 1) / theta);
         glVertex3f(x, y, z);
       }
+  }
+
+private:
+  static Legacy &Get()
+  {
+    static Legacy s_Instance;
+    return s_Instance;
   }
 };
 

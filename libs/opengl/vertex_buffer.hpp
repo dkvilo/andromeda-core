@@ -11,30 +11,30 @@ private:
 public:
   VertexBuffer()
   {
-    glGenBuffers(1, &this->m_RendererID);
+    glGenBuffers(1, &m_RendererID);
   }
 
   VertexBuffer(size_t size)
   {
-    glGenBuffers(1, &this->m_RendererID);
-    glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID);
+    glGenBuffers(1, &m_RendererID);
+    glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
   }
 
   void SetData(const void *data, uint32_t size) const
   {
-    glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID);
+    glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
   }
 
   uint32_t GetRendererID() const
   {
-    return this->m_RendererID;
+    return m_RendererID;
   }
 
   void Bind() const
   {
-    glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID);
+    glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
   }
 
   void Unbind() const

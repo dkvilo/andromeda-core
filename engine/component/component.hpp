@@ -18,48 +18,46 @@ using namespace Andromeda::Components;
 
 struct Andromeda::Components::RGBColorMaterial : Andromeda::Entity
 {
-  vec3 color;
+  vec3 m_Color;
 
-  RGBColorMaterial(const vec3 &&color)
+  RGBColorMaterial(const vec3 &&color) : m_Color(color)
   {
-    this->name = "Color Material";
-    this->color = color;
+    m_Name = "Color Material";
   }
 
   void update(double dt)
   {
-    OpenGL::Legacy::fill_color(this->color);
+    OpenGL::Legacy::fill_color(m_Color);
   }
 };
 
 struct Andromeda::Components::Stroke : public Andromeda::Entity
 {
-  RGBColorMaterial *color_material;
+  RGBColorMaterial *m_ColorMaterial;
 
-  float offset = 0.0f;
-  float radius = 10.0f;
-  int segments = 100;
-  int line_width = 8;
-  float angle = 0.0f;
+  float m_Offset = 0.0f;
+  float m_Radius = 10.0f;
+  int m_Segments = 100;
+  int m_LineWidth = 8;
+  float m_Angle = 0.0f;
 
-  Stroke()
+  Stroke() : m_ColorMaterial(new RGBColorMaterial(vec3(0.121f, 0.917f, 0.566f)))
   {
-    this->name = "Stroke2d";
-    this->rotation = vec3(0, 0, 0);
-    this->color_material = new RGBColorMaterial(vec3(0.121f, 0.917f, 0.566f));
+    m_Name = "Stroke2d";
+    m_Rotation = vec3(0, 0, 0);
   };
 
   void update(double dt)
   {
-    glLineWidth(this->line_width);
+    glLineWidth(m_LineWidth);
     glPushMatrix();
-    if (angle != 0.0f)
+    if (m_Angle != 0.0f)
     {
-      glRotatef(this->angle, this->rotation.x, this->rotation.y, this->rotation.z);
+      glRotatef(m_Angle, m_Rotation.x, m_Rotation.y, m_Rotation.z);
     }
     Andromeda_2d_begin(Andromeda_line_loop);
-    this->color_material->update(dt);
-    OpenGL::Legacy::draw_circle(this->position, this->radius + this->offset, this->segments);
+    m_ColorMaterial->update(dt);
+    OpenGL::Legacy::draw_circle(m_Position, m_Radius + m_Offset, m_Segments);
     Andromeda_2d_end();
     glPopMatrix();
   };
@@ -68,25 +66,25 @@ struct Andromeda::Components::Stroke : public Andromeda::Entity
 struct Andromeda::Components::Shape2d : public Andromeda::Entity
 {
 
-  float radius = 100.f;
-  float angle = 0.0f;
-  int segments = 100;
-  int triangles = 100;
+  float m_Radius = 100.f;
+  float m_Angle = 0.0f;
+  int m_Segments = 100;
+  int m_Triangles = 100;
 
   Shape2d()
   {
-    this->name = "Shape2d";
+    m_Name = "Shape2d";
   };
 
   void update(double dt)
   {
     glPushMatrix();
-    if (this->angle != 0.0f)
+    if (m_Angle != 0.0f)
     {
-      glRotatef(this->angle, this->rotation.x, this->rotation.y, this->rotation.z);
+      glRotatef(m_Angle, m_Rotation.x, m_Rotation.y, m_Rotation.z);
     }
     Andromeda_2d_begin(Andromeda_triangle_fan);
-    OpenGL::Legacy::draw_filled_circle(this->position, this->radius, this->segments, this->triangles);
+    OpenGL::Legacy::draw_filled_circle(m_Position, m_Radius, m_Segments, m_Triangles);
     Andromeda_2d_end();
     glPopMatrix();
   };
@@ -94,29 +92,28 @@ struct Andromeda::Components::Shape2d : public Andromeda::Entity
 
 struct Andromeda::Components::Transform : public Andromeda::Entity
 {
-  float scale = 0.5f;
-  float angle = 0.0f;
+  float m_Scale = 0.5f;
+  float m_Angle = 0.0f;
 
-  Transform(const vec3 &&pos, const vec3 &&rot, float scale)
+  Transform(const vec3 &&pos, const vec3 &&rot, float scale) : m_Scale(scale)
   {
-    this->name = "Transfrom";
-    this->position = pos;
-    this->rotation = rot;
-    this->scale = scale;
+    m_Name = "Transfrom";
+    m_Position = pos;
+    m_Rotation = rot;
   };
+
   void update(double dt){};
 };
 
 struct Andromeda::Components::Quad : public Andromeda::Entity
 {
 
-  Andromeda::Renderer renderer;
+  Andromeda::Renderer m_Renderer;
 
   Quad()
   {
-    this->name = "Quad";
-
-    this->renderer.Init(
+    m_Name = "Quad";
+    m_Renderer.Init(
         OpenGL::Shader("./shaders/basic/color.frag", "./shaders/basic/color.vert"),
         OpenGL::VertexBuffer(18 * sizeof(float)));
   };
@@ -124,32 +121,32 @@ struct Andromeda::Components::Quad : public Andromeda::Entity
   void update(double dt)
   {
 
-    this->renderer.ResetSubmitton();
+    m_Renderer.ResetSubmitton();
 
     float positions[18] = {
-        -0.1f + this->position.x, -0.1f + this->position.y, 0.0f,
-        0.1f + this->position.x, -0.1f + this->position.y, 0.0f,
-        -0.1 + this->position.x, 0.1f + this->position.y, 0.0f,
+        -0.1f + m_Position.x, -0.1f + m_Position.y, 0.0f,
+        0.1f + m_Position.x, -0.1f + m_Position.y, 0.0f,
+        -0.1 + m_Position.x, 0.1f + m_Position.y, 0.0f,
 
-        -0.1f + this->position.x, 0.1f + this->position.y, 0.0f,
-        0.1f + this->position.x, -0.1f + this->position.y, 0.0f,
-        0.1f + this->position.x, 0.1f + this->position.y, 0.0f};
+        -0.1f + m_Position.x, 0.1f + m_Position.y, 0.0f,
+        0.1f + m_Position.x, -0.1f + m_Position.y, 0.0f,
+        0.1f + m_Position.x, 0.1f + m_Position.y, 0.0f};
 
-    this->renderer.Submit(positions, 18 * sizeof(float), 3, 3 * sizeof(float));
-    this->renderer.Draw();
+    m_Renderer.Submit(positions, 18 * sizeof(float), 3, 3 * sizeof(float));
+    m_Renderer.Draw();
   };
 };
 
 struct Andromeda::Components::Sphere : public Andromeda::Entity
 {
 
-  float angle = 0.0f;
-  uint32_t segments = 100;
-  float radius = 10.0f;
+  float m_Angle = 0.0f;
+  uint32_t m_Segments = 100;
+  float m_Radius = 10.0f;
 
   Sphere()
   {
-    this->name = "Sphere";
+    m_Name = "Sphere";
   };
 
   void update(double dt)
@@ -160,9 +157,9 @@ struct Andromeda::Components::Sphere : public Andromeda::Entity
     glEnable(GL_COLOR_MATERIAL);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    if (this->angle != 0.0f)
+    if (m_Angle != 0.0f)
     {
-      glRotatef(this->angle, this->rotation.x, this->rotation.y, this->rotation.z);
+      glRotatef(m_Angle, m_Rotation.x, m_Rotation.y, m_Rotation.z);
     }
 
     // yellow diffuse : color where light hit directly the object's surface
@@ -171,7 +168,7 @@ struct Andromeda::Components::Sphere : public Andromeda::Entity
     // Yellow ambient : color applied everywhere
     float ambient[] = {0.f, 0.f, 1.f, 1.000f};
 
-    vec3 lightPosition = this->position + vec3(2.0f, 2.0f, -7.0f);
+    vec3 lightPosition = m_Position + vec3(2.0f, 2.0f, -7.0f);
 
     // Ambient light component
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
@@ -188,7 +185,7 @@ struct Andromeda::Components::Sphere : public Andromeda::Entity
     Andromeda_2d_begin(Andromeda_triangles);
     // vec3 color(1, 0, 0);
     // OpenGL::Legacy::fill_color(color);
-    OpenGL::Legacy::draw_sphere(this->position, this->segments, this->radius);
+    OpenGL::Legacy::draw_sphere(m_Position, m_Segments, m_Radius);
     Andromeda_2d_end();
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

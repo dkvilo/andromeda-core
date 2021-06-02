@@ -5,7 +5,7 @@
 #include "entity/entity.hpp"
 #include "component/component.hpp"
 #include "../../libs/math/functions.hpp"
-#include "../../libs/util/uuid.hpp";
+#include "../../libs/util/uuid.hpp"
 
 using namespace Andromeda::Components;
 using namespace L::Util;
@@ -15,53 +15,53 @@ struct GameObject : public Andromeda::Entity
 
   GameObject(const char *name)
   {
-    this->name = name;
-    this->id = UUID().V1();
+    m_Name = name;
+    m_ID = UUID().V1();
   }
 
   void update(double dt)
   {
-    Transform *transform = static_cast<Transform *>(this->GetComponent("Transfrom"));
+    Transform *transform = static_cast<Transform *>(GetComponent("Transfrom"));
     if (transform != nullptr)
     {
-      this->position = transform->position;
+      m_Position = transform->m_Position;
     }
 
-    Shape2d *shape = static_cast<Shape2d *>(this->GetComponent("Shape2d"));
+    Shape2d *shape = static_cast<Shape2d *>(GetComponent("Shape2d"));
     if (shape != nullptr)
     {
-      shape->position = this->position;
-      shape->radius = transform->scale;
-      shape->rotation = transform->rotation;
-      shape->angle = transform->angle;
+      shape->m_Position = m_Position;
+      shape->m_Radius = transform->m_Scale;
+      shape->m_Rotation = transform->m_Rotation;
+      shape->m_Angle = transform->m_Angle;
     }
 
-    Stroke *stroke = static_cast<Stroke *>(this->GetComponent("Stroke"));
+    Stroke *stroke = static_cast<Stroke *>(GetComponent("Stroke"));
     if (stroke != nullptr)
     {
-      stroke->position = this->position;
-      stroke->radius = transform->scale;
-      stroke->rotation = transform->rotation;
-      stroke->angle = transform->angle;
+      stroke->m_Position = m_Position;
+      stroke->m_Radius = transform->m_Scale;
+      stroke->m_Rotation = transform->m_Rotation;
+      stroke->m_Angle = transform->m_Angle;
     }
 
-    Quad *quad = static_cast<Quad *>(this->GetComponent("Quad"));
+    Quad *quad = static_cast<Quad *>(GetComponent("Quad"));
     if (quad != nullptr)
     {
-      quad->position = this->position;
-      quad->rotation = transform->rotation;
+      quad->m_Position = m_Position;
+      quad->m_Rotation = transform->m_Rotation;
     }
 
-    Sphere *sphere = static_cast<Sphere *>(this->GetComponent("Sphere"));
+    Sphere *sphere = static_cast<Sphere *>(GetComponent("Sphere"));
     if (sphere != nullptr)
     {
-      sphere->position = this->position;
-      sphere->radius = transform->scale;
-      sphere->rotation = transform->rotation;
-      sphere->angle = transform->angle * dt;
+      sphere->m_Position = m_Position;
+      sphere->m_Radius = transform->m_Scale;
+      sphere->m_Rotation = transform->m_Rotation;
+      sphere->m_Angle = transform->m_Angle * dt;
     }
 
-    for (auto item : this->components)
+    for (auto item : GetComponents())
     {
       item.comp->update(dt);
     }

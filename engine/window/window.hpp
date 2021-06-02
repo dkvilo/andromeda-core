@@ -19,9 +19,9 @@ class Andromeda::Window
 {
 
 private:
-  GLFWwindow *m_window_id;
-  GLFWmonitor *m_monitor_id;
-  const GLFWvidmode *m_video_mode;
+  GLFWwindow *m_WindowID;
+  GLFWmonitor *m_MonitorID;
+  const GLFWvidmode *m_VideoMode;
 
 public:
   Window(Andromeda::Types::WindowConfog *conf)
@@ -38,11 +38,11 @@ public:
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_FALSE);
 
-    this->m_monitor_id = glfwGetPrimaryMonitor();
-    this->m_video_mode = glfwGetVideoMode(this->m_monitor_id);
-    this->m_window_id = glfwCreateWindow(conf->width, conf->height, static_cast<const char *>(conf->title), nullptr, nullptr);
+    m_MonitorID = glfwGetPrimaryMonitor();
+    m_VideoMode = glfwGetVideoMode(m_MonitorID);
+    m_WindowID = glfwCreateWindow(conf->width, conf->height, static_cast<const char *>(conf->title), nullptr, nullptr);
 
-    glfwMakeContextCurrent(this->m_window_id);
+    glfwMakeContextCurrent(m_WindowID);
     glfwSwapInterval(1);
 
     {
@@ -84,22 +84,22 @@ public:
 
   void HideCursor() const
   {
-    glfwSetInputMode(this->m_window_id, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    glfwSetInputMode(m_WindowID, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
   }
 
   inline GLFWwindow *const GetId() const
   {
-    return this->m_window_id;
+    return m_WindowID;
   }
 
   inline GLFWmonitor *const GetMonitorId() const
   {
-    return this->m_monitor_id;
+    return m_MonitorID;
   }
 
   inline const GLFWvidmode *const GetVideoMode() const
   {
-    return this->m_video_mode;
+    return m_VideoMode;
   }
 };
 
