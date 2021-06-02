@@ -58,7 +58,7 @@ struct GameObject : public Andromeda::Entity
       sphere->m_Position = m_Position;
       sphere->m_Radius = transform->m_Scale;
       sphere->m_Rotation = transform->m_Rotation;
-      sphere->m_Angle = transform->m_Angle * dt;
+      sphere->m_Angle = transform->m_Angle;
     }
 
     for (auto item : GetComponents())

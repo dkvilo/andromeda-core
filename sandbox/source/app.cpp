@@ -53,19 +53,15 @@ int main(int argc, char const *argv[])
   ball.AddComponent("Sphere", new Sphere());
   Andromeda::SceneManager::AddEntity(&ball);
 
-  {
-    Transform *transform = static_cast<Transform *>(ball.GetComponent("Transform"));
-    if (transform != nullptr)
-    {
-      transform->m_Angle = 90.0f;
-      transform->m_Rotation.y = 0.347f;
-    }
+  RGBColorMaterial *colorMaterial = static_cast<RGBColorMaterial *>(ball.GetComponent("RGBColorMaterial"));
 
-    RGBColorMaterial *colorMaterial = static_cast<RGBColorMaterial *>(transform->GetComponent("RGBColorMaterial"));
-    if (colorMaterial != nullptr)
-    {
-      colorMaterial->m_Color = vec3(1.000f, 0.748f, 0.387f);
-    }
+  Transform *transform = static_cast<Transform *>(ball.GetComponent("Transform"));
+  // Pick rotation size
+  if (transform != nullptr)
+  {
+    transform->m_Rotation.y = 0.347f;
+    // Scale up the mesh
+    transform->m_Scale = 0.631f;
   }
 
   while (!Andromeda::Window::ShouldClose(app.GetWidnowId()))
@@ -85,6 +81,21 @@ int main(int argc, char const *argv[])
       if (ent->flag)
       {
         ent->update(app.m_ElapsedTime);
+
+        //  Update color values dynamically based on elapsedTime
+        if (colorMaterial != nullptr)
+        {
+          colorMaterial->m_Color =
+              vec3(abs(sin(L::Math::Lerp(.0f, .7f, app.m_ElapsedTime))),
+                   abs(cos(L::Math::Lerp(.0f, .7f, app.m_ElapsedTime))),
+                   abs(sin(L::Math::Lerp(.0f, .4f, app.m_ElapsedTime))));
+        }
+
+        // Update rotation angle based on elapsedTime
+        if (transform != nullptr)
+        {
+          transform->m_Angle = 90.0f * app.m_ElapsedTime;
+        }
       }
     }
 
