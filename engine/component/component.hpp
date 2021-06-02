@@ -97,7 +97,7 @@ struct Andromeda::Components::Transform : public Andromeda::Entity
 
   Transform(const vec3 &&pos, const vec3 &&rot, float scale) : m_Scale(scale)
   {
-    m_Name = "Transfrom";
+    m_Name = "Transform";
     m_Position = pos;
     m_Rotation = rot;
   };

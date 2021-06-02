@@ -21,7 +21,7 @@ struct GameObject : public Andromeda::Entity
 
   void update(double dt)
   {
-    Transform *transform = static_cast<Transform *>(GetComponent("Transfrom"));
+    Transform *transform = static_cast<Transform *>(GetComponent("Transform"));
     if (transform != nullptr)
     {
       m_Position = transform->m_Position;

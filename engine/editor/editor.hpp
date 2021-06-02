@@ -315,7 +315,7 @@ private:
     ImGui::Separator();
     ImGui::Text("ID: %s", ent->m_ID.c_str());
 
-    Andromeda::Components::Transform *transform = static_cast<Andromeda::Components::Transform *>(ent->GetComponent("Transfrom"));
+    Andromeda::Components::Transform *transform = static_cast<Andromeda::Components::Transform *>(ent->GetComponent("Transform"));
     if (transform != nullptr)
     {
       ImGui::Separator();
