@@ -13,6 +13,14 @@ using namespace L::Util;
 struct GameObject : public Andromeda::Entity
 {
 
+  Transform *c_Transform;
+  Shape2d *c_Shape;
+  Stroke *c_Stroke;
+  Quad *c_Quad;
+  Sphere *c_Sphere;
+
+  bool m_Initialized = false;
+
   GameObject(const char *name)
   {
     m_Name = name;
@@ -21,44 +29,50 @@ struct GameObject : public Andromeda::Entity
 
   void update(double dt)
   {
-    Transform *transform = static_cast<Transform *>(GetComponent("Transform"));
-    if (transform != nullptr)
+    if (!m_Initialized)
     {
-      m_Position = transform->m_Position;
+      c_Transform = static_cast<Transform *>(GetComponent("Transform"));
+      c_Shape = static_cast<Shape2d *>(GetComponent("Shape2d"));
+      c_Stroke = static_cast<Stroke *>(GetComponent("Stroke"));
+      c_Quad = static_cast<Quad *>(GetComponent("Quad"));
+      c_Sphere = static_cast<Sphere *>(GetComponent("Sphere"));
+
+      m_Initialized = true;
     }
 
-    Shape2d *shape = static_cast<Shape2d *>(GetComponent("Shape2d"));
-    if (shape != nullptr)
+    if (c_Transform != nullptr)
     {
-      shape->m_Position = m_Position;
-      shape->m_Radius = transform->m_Scale;
-      shape->m_Rotation = transform->m_Rotation;
-      shape->m_Angle = transform->m_Angle;
+      m_Position = c_Transform->m_Position;
     }
 
-    Stroke *stroke = static_cast<Stroke *>(GetComponent("Stroke"));
-    if (stroke != nullptr)
+    if (c_Shape != nullptr)
     {
-      stroke->m_Position = m_Position;
-      stroke->m_Radius = transform->m_Scale;
-      stroke->m_Rotation = transform->m_Rotation;
-      stroke->m_Angle = transform->m_Angle;
+      c_Shape->m_Position = c_Transform->m_Position;
+      c_Shape->m_Radius = c_Transform->m_Scale;
+      c_Shape->m_Rotation = c_Transform->m_Rotation;
+      c_Shape->m_Angle = c_Transform->m_Angle;
     }
 
-    Quad *quad = static_cast<Quad *>(GetComponent("Quad"));
-    if (quad != nullptr)
+    if (c_Stroke != nullptr)
     {
-      quad->m_Position = m_Position;
-      quad->m_Rotation = transform->m_Rotation;
+      c_Stroke->m_Position = c_Transform->m_Position;
+      c_Stroke->m_Radius = c_Transform->m_Scale;
+      c_Stroke->m_Rotation = c_Transform->m_Rotation;
+      c_Stroke->m_Angle = c_Transform->m_Angle;
     }
 
-    Sphere *sphere = static_cast<Sphere *>(GetComponent("Sphere"));
-    if (sphere != nullptr)
+    if (c_Quad != nullptr)
     {
-      sphere->m_Position = m_Position;
-      sphere->m_Radius = transform->m_Scale;
-      sphere->m_Rotation = transform->m_Rotation;
-      sphere->m_Angle = transform->m_Angle;
+      c_Quad->m_Position = c_Transform->m_Position;
+      c_Quad->m_Rotation = c_Transform->m_Rotation;
+    }
+
+    if (c_Sphere != nullptr)
+    {
+      c_Sphere->m_Position = c_Transform->m_Position;
+      c_Sphere->m_Radius = c_Transform->m_Scale;
+      c_Sphere->m_Rotation = c_Transform->m_Rotation;
+      c_Sphere->m_Angle = c_Transform->m_Angle;
     }
 
     for (auto item : GetComponents())
