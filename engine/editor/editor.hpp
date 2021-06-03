@@ -20,10 +20,9 @@ class Andromeda::Editor
 {
 private:
   Andromeda::Window *m_Window;
-  const char *glsl_version = "#version 130";
-  bool show_editable_state = false;
-  int selected_ent_index = 0;
-  Andromeda::Entity *selected_entity;
+  Andromeda::Entity *m_SelectedEntity;
+  bool m_ShowEditableState = false;
+  const char *m_GlslVersion = "#version 130";
 
 public:
   static void Init()
@@ -46,12 +45,26 @@ public:
     Get().set_window_impl(window);
   }
 
+  static const char *GetSelectedEntityID()
+  {
+    return Get().get_selected_entity_ID_impl();
+  }
+
+private:
+  const char *get_selected_entity_ID_impl() const
+  {
+    if (m_SelectedEntity != nullptr)
+    {
+      return m_SelectedEntity->m_ID.c_str();
+    }
+    return nullptr;
+  }
+
   void set_window_impl(Andromeda::Window *window)
   {
     m_Window = window;
   }
 
-private:
   void setup_editor_impl()
   {
 
@@ -143,7 +156,7 @@ private:
     style->WindowMenuButtonPosition = ImGuiDir_Right;
 
     ImGui_ImplGlfw_InitForOpenGL(m_Window->GetId(), true);
-    ImGui_ImplOpenGL3_Init(this->glsl_version);
+    ImGui_ImplOpenGL3_Init(m_GlslVersion);
 #endif
   }
 
@@ -242,7 +255,7 @@ private:
       {
         auto ent = Andromeda::SceneManager::GetEntity(i);
         bool is_open = ImGui::TreeNode(ent->m_Name);
-        if (!ent->flag)
+        if (!ent->m_Flag)
         {
           ImGui::SameLine();
           ImGui::Text("Disabled");
@@ -255,13 +268,13 @@ private:
             ImGui::Text(ent->GetComponents()[j].name);
           }
 
-          if (this->selected_entity != nullptr)
+          if (m_SelectedEntity != nullptr)
           {
-            this->selected_entity = nullptr;
+            m_SelectedEntity = nullptr;
           }
 
-          this->show_editable_state = true;
-          this->selected_entity = ent;
+          m_ShowEditableState = true;
+          m_SelectedEntity = ent;
           ImGui::TreePop();
         }
       }
@@ -293,9 +306,9 @@ private:
     ImGui::End();
 
     ImGui::Begin("Inspector");
-    if (this->show_editable_state && this->selected_entity != nullptr)
+    if (m_ShowEditableState && m_SelectedEntity != nullptr)
     {
-      Editor::DrawEntityComponentEditableProperties(this->selected_entity);
+      Editor::DrawEntityComponentEditableProperties(m_SelectedEntity);
     }
     ImGui::End();
 #endif
@@ -308,10 +321,7 @@ private:
     ASSERT(ent, "Entity was not initialized", NULL);
 
     ImGui::Separator();
-    ImGui::Text(ent->m_Name);
-
-    ImGui::Separator();
-    ImGui::Checkbox("Enabled", &ent->flag);
+    ImGui::Checkbox(ent->m_Name, &ent->m_Flag);
     ImGui::Separator();
     ImGui::Text("ID: %s", ent->m_ID.c_str());
 
