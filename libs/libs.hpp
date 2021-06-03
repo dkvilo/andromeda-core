@@ -38,10 +38,10 @@ namespace L
 
     static const double PI = 3.1415926f;
     static const double TWO_PI = L::Math::PI * 2.0;
-    static inline float Lerp(float a, float b, float t);
-    static inline float InvLerp(float a, float b, float v);
-    static inline float Remap(float i_max, float i_min, float o_min, float o_max, float v);
-    static inline float RnR(float min, float max);
+    static inline float Lerp(const float &a, const float &b, const float &t);
+    static inline float InvLerp(const float &a, const float &b, const float &v);
+    static inline float Remap(const float &i_max, const float &i_min, const float &o_min, const float &o_max, const float &v);
+    static inline float RnR(const float &min, const float &max);
   }
 
   namespace Util

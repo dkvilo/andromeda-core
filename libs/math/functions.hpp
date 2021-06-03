@@ -3,24 +3,24 @@
 
 #include "../libs.hpp"
 
-static inline float L::Math::Lerp(float a, float b, float t)
+static inline float L::Math::Lerp(const float &a, const float &b, const float &t)
 {
   return (1.0f - t) * a + b * t;
 }
 
-static inline float L::Math::InvLerp(float a, float b, float v)
+static inline float L::Math::InvLerp(const float &a, const float &b, const float &v)
 {
   return (v - a) / (b - a);
 }
 
-static inline float L::Math::Remap(float i_max, float i_min, float o_min, float o_max, float v)
+static inline float L::Math::Remap(const float &i_max, const float &i_min, const float &o_min, const float &o_max, const float &v)
 {
   float t = L::Math::InvLerp(i_min, i_max, v);
   return L::Math::Lerp(o_min, o_max, t);
 }
 
 // XOR Random
-static inline float L::Math::RnR(float min, float max)
+static inline float L::Math::RnR(const float &min, const float &max)
 {
 
   uint32_t range = 0xf2eec0de;
