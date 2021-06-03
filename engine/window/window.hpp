@@ -27,6 +27,8 @@ public:
   Window(Andromeda::Types::WindowConfog *conf)
   {
 
+    Andromeda::Log::SetPrefix("Window");
+
     {
       int status = (int)glfwInit() == GLFW_TRUE;
       ASSERT(status, "Error while initializing GLFW", NULL);
@@ -49,6 +51,8 @@ public:
       int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
       ASSERT(status, "Failed to initialize OpenGL loader", NULL);
     }
+
+    Andromeda::Log::Print("glfw window has been initialzed");
   }
 
   static GLFWkeyfun KeyHandler(GLFWwindow *window, GLFWkeyfun callback)
