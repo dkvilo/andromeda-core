@@ -3,12 +3,14 @@
 
 #include "andromeda.hpp"
 #include "entity/entity.hpp"
+#include "editor/editor.hpp"
 #include "component/component.hpp"
+
 #include "../../libs/math/functions.hpp"
 #include "../../libs/util/uuid.hpp"
 
-using namespace Andromeda::Components;
 using namespace L::Util;
+using namespace Andromeda::Components;
 
 struct GameObject : public Andromeda::Entity
 {
@@ -20,6 +22,11 @@ struct GameObject : public Andromeda::Entity
   Sphere *c_Sphere;
 
   bool m_Initialized = false;
+
+  GameObject()
+  {
+    m_ID = UUID().V1();
+  }
 
   GameObject(const char *name)
   {
@@ -75,9 +82,13 @@ struct GameObject : public Andromeda::Entity
       c_Sphere->m_Angle = c_Transform->m_Angle;
     }
 
+    // Update entity components
     for (auto item : GetComponents())
     {
-      item.comp->update(dt);
+      if (item.comp->m_Flag)
+      {
+        item.comp->update(dt);
+      }
     }
   }
 };
