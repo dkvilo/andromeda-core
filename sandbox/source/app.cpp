@@ -3,7 +3,7 @@
 using namespace glm;
 using namespace Andromeda::Components;
 
-/// Sandbox Draw Implementation
+// Sandbox Draw Implementation
 void Sandbox::Draw(int width, int height)
 {
   // Extend Base Renderer from sandbox
@@ -19,46 +19,31 @@ int main(int argc, char const *argv[])
   Andromeda::Editor::SetWindow(app.Window());
   Andromeda::Editor::Init();
 
-  // GameObject player = GameObject("Player");
-  // player.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
-  // player.AddComponent("Shape2d", new Shape2d());
-  // player.AddComponent("Stroke", new Stroke());
-  // player.AddComponent("Transform", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-  // Andromeda::SceneManager::AddEntity(&player);
+  GameObject player = GameObject();
+  player.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
+  player.AddComponent<Shape2d>(new Shape2d());
+  player.AddComponent<Stroke>(new Stroke());
+  player.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  Andromeda::SceneManager::AddEntity(&player);
 
-  // GameObject enemy = GameObject("Enemy");
-  // enemy.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
-  // enemy.AddComponent("Shape2d", new Shape2d());
-  // enemy.AddComponent("Stroke", new Stroke());
-  // enemy.AddComponent("Transform", new Transform(vec3(1.f, 2.f, 0.f), vec3(0.f, 0.f, 0.f), 0.4f));
-  // Andromeda::SceneManager::AddEntity(&enemy);
-
-  // GameObject quad = GameObject("Test Shape");
-  // quad.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
-  // quad.AddComponent("Quad", new Quad());
-  // quad.AddComponent("Transform", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-  // quad.AddComponent("Stroke", new Stroke());
-  // Andromeda::SceneManager::AddEntity(&quad);
-
-  // GameObject quad2 = GameObject("Test Shape 2");
-  // quad2.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(1.f, 0.f, 0.387f)));
-  // quad2.AddComponent("Quad", new Quad());
-  // quad2.AddComponent("Transform", new Transform(vec3(0.f, 0.5f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-  // quad2.AddComponent("Stroke", new Stroke());
-  // Andromeda::SceneManager::AddEntity(&quad2);
+  GameObject quad = GameObject("Test Shape");
+  quad.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
+  quad.AddComponent<Quad>(new Quad());
+  quad.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  Andromeda::SceneManager::AddEntity(&quad);
 
   GameObject ball = GameObject("Ball");
-  ball.AddComponent("RGBColorMaterial", new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
-  ball.AddComponent("Transform", new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-  ball.AddComponent("Sphere", new Sphere());
+  ball.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
+  ball.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  ball.AddComponent<Sphere>(new Sphere());
   Andromeda::SceneManager::AddEntity(&ball);
 
   RGBColorMaterial *colorMaterial = static_cast<RGBColorMaterial *>(ball.GetComponent("RGBColorMaterial"));
 
   Transform *transform = static_cast<Transform *>(ball.GetComponent("Transform"));
-  // Pick rotation size
   if (transform != nullptr)
   {
+    // Pick rotation side
     transform->m_Rotation.y = 0.347f;
     // Scale up the mesh
     transform->m_Scale = 0.631f;
@@ -66,7 +51,7 @@ int main(int argc, char const *argv[])
 
   while (!Andromeda::Window::ShouldClose(app.GetWidnowId()))
   {
-    // Leasent for global events
+    // Listen for window events
     Andromeda::Window::PullEvents();
 
     // Update time in sandbox env
@@ -75,11 +60,12 @@ int main(int argc, char const *argv[])
     // Draw in sandbox
     app.Draw(app.m_Width, app.m_Height);
 
-    for (int i = 0; i < Andromeda::SceneManager::Registry.size(); i++)
+    for (uint32_t i = 0; i < Andromeda::SceneManager::Registry.size(); i++)
     {
       auto ent = Andromeda::SceneManager::GetEntity(i);
-      if (ent->flag)
+      if (ent->m_Flag)
       {
+        // Update entity
         ent->update(app.m_ElapsedTime);
 
         //  Update color values dynamically based on elapsedTime
