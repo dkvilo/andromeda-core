@@ -37,9 +37,9 @@ struct Andromeda::Components::Stroke : public Andromeda::Entity
 
   float m_Offset = 0.0f;
   float m_Radius = 10.0f;
+  float m_Angle = 0.0f;
   int m_Segments = 100;
   int m_LineWidth = 8;
-  float m_Angle = 0.0f;
 
   Stroke() : m_ColorMaterial(new RGBColorMaterial(vec3(0.121f, 0.917f, 0.566f)))
   {
