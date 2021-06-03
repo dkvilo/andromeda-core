@@ -27,6 +27,9 @@ GLFW_LIB					:= $(GLFW_LINUX_LIB)
 GLM_DIR						:= $(DEPS_DIR)/glm
 GLM_H     				:= -I./$(GLM_DIR)
 
+SPDLOG_DIR				:= $(DEPS_DIR)/spdlog
+SPD_LOG_H     		:= -I./$(SPDLOG_DIR)
+
 IMGUI_DIR					:= $(DEPS_DIR)/imgui
 IMGUI_H     			:= -I./$(IMGUI_DIR)
 IMGUI_SRC					:= $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_draw.cpp \
@@ -61,7 +64,7 @@ endif
 LINKER_FLAGS 			:= $(GLAD_LIB) $(GLFW_LIB) -ldl
 
 EDITOR_HEADERS 		:= $(IMGUI_H) 
-COMMON_HEADERS		:= $(SANDBOX_H) $(ENGINE_H) $(GLAD_H) $(GLFW_H) $(GLM_H) $(STB_H) 
+COMMON_HEADERS		:= $(SANDBOX_H) $(ENGINE_H) $(GLAD_H) $(GLFW_H) $(GLM_H) $(STB_H) $(SPD_LOG_H)
 
 clean:
 	rm -rf *.a *.o
