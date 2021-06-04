@@ -88,7 +88,7 @@ private:
     config.OversampleH = 2;
     config.OversampleV = 1;
     config.GlyphExtraSpacing.x = 1.0f;
-    io.Fonts->AddFontFromFileTTF("./assets/font/Ruda-Bold.ttf", 15.0f, &config);
+    io.Fonts->AddFontFromFileTTF("./engine/editor/assets/font/Ruda-Bold.ttf", 15.0f, &config);
 
     colors[ImGuiCol_Text] = ImVec4(0.952, 0.962, 0.982, 1.00f);
     colors[ImGuiCol_TextDisabled] = ImVec4(0.44f, 0.44f, 0.44f, 1.00f);
