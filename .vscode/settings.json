@@ -67,5 +67,9 @@
     "variant": "cpp",
     "queue": "cpp",
     "stack": "cpp"
-  }
+  },
+  "cSpell.words": [
+    "earth",
+    "png"
+  ]
 }

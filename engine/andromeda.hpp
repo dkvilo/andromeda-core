@@ -35,6 +35,7 @@ namespace Andromeda::Components
   struct Stroke;
   struct Quad;
   struct Sphere;
+  struct Texture2d;
 
 }
 

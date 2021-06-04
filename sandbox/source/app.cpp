@@ -22,7 +22,6 @@ int main(int argc, char const *argv[])
   GameObject player = GameObject();
   player.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
   player.AddComponent<Shape2d>(new Shape2d());
-  player.AddComponent<Stroke>(new Stroke());
   player.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
   Andromeda::SceneManager::AddEntity(&player);
 
@@ -36,6 +35,7 @@ int main(int argc, char const *argv[])
   ball.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
   ball.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
   ball.AddComponent<Sphere>(new Sphere());
+  ball.AddComponent<Texture2d>(new Texture2d("./assets/texture/bg.png"));
   Andromeda::SceneManager::AddEntity(&ball);
 
   RGBColorMaterial *colorMaterial = static_cast<RGBColorMaterial *>(ball.GetComponent("RGBColorMaterial"));
@@ -69,7 +69,7 @@ int main(int argc, char const *argv[])
         ent->update(app.m_ElapsedTime);
 
         //  Update color values dynamically based on elapsedTime
-        if (colorMaterial != nullptr)
+        if (colorMaterial != nullptr && colorMaterial->m_Flag)
         {
           colorMaterial->m_Color =
               vec3(abs(sin(L::Math::Lerp(.0f, .7f, app.m_ElapsedTime))),

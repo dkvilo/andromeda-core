@@ -6,7 +6,7 @@
 #include "component/component.hpp"
 
 #include "../../libs/libs.hpp"
-
+#define ANDROMEDA_EDITOR
 #ifdef ANDROMEDA_EDITOR
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
@@ -329,7 +329,7 @@ private:
     if (transform != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("[%s]", transform->m_Name);
+      ImGui::Text("%s", transform->m_Name);
       ImGui::SliderFloat3("Position", (float *)&transform->m_Position, -10.0f, 10.f);
       ImGui::SliderFloat("Scale", &transform->m_Scale, 0, 10);
       ImGui::Text("Rotation");
@@ -341,7 +341,7 @@ private:
     if (color_material != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("[%s]", color_material->m_Name);
+      ImGui::Checkbox(color_material->m_Name, &color_material->m_Flag);
       ImGui::Text("Color");
       ImGui::ColorEdit3("Primary", (float *)&color_material->m_Color);
     }
@@ -350,7 +350,7 @@ private:
     if (shape != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("[%s]", shape->m_Name);
+      ImGui::Checkbox(shape->m_Name, &shape->m_Flag);
       ImGui::Text("Segments");
       ImGui::SliderInt("Face", &shape->m_Segments, 0, shape->m_Triangles);
       ImGui::Text("Triangles");
@@ -361,14 +361,25 @@ private:
     if (quad != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("[%s]", quad->m_Name);
+      ImGui::Checkbox(quad->m_Name, &quad->m_Flag);
+    }
+
+    Andromeda::Components::Texture2d *texture = static_cast<Andromeda::Components::Texture2d *>(ent->GetComponent("Texture2d"));
+    if (texture != nullptr)
+    {
+      ImGui::Separator();
+      ImGui::Checkbox(texture->m_Name, &texture->m_Flag);
+      ImGui::Separator();
+      ImGui::Text("Path: %s", texture->m_Path);
+      ImGui::Separator();
+      ImGui::Text("ID: %d", texture->m_Texture);
     }
 
     Andromeda::Components::Stroke *stroke = static_cast<Andromeda::Components::Stroke *>(ent->GetComponent("Stroke"));
     if (stroke != nullptr)
     {
       ImGui::Separator();
-      ImGui::Text("[%s]", stroke->m_Name);
+      ImGui::Checkbox(stroke->m_Name, &stroke->m_Flag);
       ImGui::Text("Offset");
       ImGui::SliderFloat("xy", &stroke->m_Offset, 0, 100);
       ImGui::Text("Segments");

@@ -71,6 +71,15 @@ struct TypeName<Andromeda::Components::Stroke>
   }
 };
 
+template <>
+struct TypeName<Andromeda::Components::Texture2d>
+{
+  static const char *Get()
+  {
+    return "Texture2d";
+  }
+};
+
 struct Andromeda::Component
 {
   const char *name;

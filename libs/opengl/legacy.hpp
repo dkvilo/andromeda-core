@@ -57,33 +57,43 @@ public:
     Get().draw_sphere_impl(position, segments, r);
   }
 
-  static void new_texture(const char *path, unsigned int &texture)
+  static void CreateTexture(const char *path, unsigned int &texture)
   {
-    int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(1);
+    int width, height, channels;
+    stbi_set_flip_vertically_on_load(0);
 
-    unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
-    ASSERT(data, "(STB_IMAGE): Unable to load texture", NULL);
+    unsigned char *dataBuffer = stbi_load(path, &width, &height, &channels, 0);
+    ASSERT(dataBuffer, "(STB_IMAGE): Unable to load texture", NULL);
 
-    glGenTextures(0, &texture);
+    glGenTextures(1, &texture);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
 
+    GLenum texDataFormat;
+    if (channels == 4)
+    {
+      texDataFormat = GL_RGBA;
+    }
+
+    if (channels == 3)
+    {
+      texDataFormat = GL_RGB;
+    }
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    stbi_image_free(data);
+    glTexImage2D(GL_TEXTURE_2D, 0, texDataFormat, width, height, 0, texDataFormat, GL_UNSIGNED_BYTE, dataBuffer);
+    stbi_image_free(dataBuffer);
   }
 
 private:
   void blend_alpha_impl()
   {
-    // TODO: make configurable
+    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
 
@@ -119,7 +129,7 @@ private:
   void draw_sphere_impl(vec3 position, u_int32_t segments, float radius)
   {
 
-    const int theta = 100;
+    const int theta = 200;
 
     for (int lng = 0; lng < segments; lng++)
       for (int lat = 0; lat < theta; lat++)

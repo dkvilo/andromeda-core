@@ -20,6 +20,7 @@ struct GameObject : public Andromeda::Entity
   Stroke *c_Stroke;
   Quad *c_Quad;
   Sphere *c_Sphere;
+  Texture2d *c_Texture;
 
   bool m_Initialized = false;
 
@@ -43,6 +44,7 @@ struct GameObject : public Andromeda::Entity
       c_Stroke = static_cast<Stroke *>(GetComponent("Stroke"));
       c_Quad = static_cast<Quad *>(GetComponent("Quad"));
       c_Sphere = static_cast<Sphere *>(GetComponent("Sphere"));
+      c_Texture = static_cast<Texture2d *>(GetComponent("Texture2d"));
 
       m_Initialized = true;
     }
@@ -80,6 +82,10 @@ struct GameObject : public Andromeda::Entity
       c_Sphere->m_Radius = c_Transform->m_Scale;
       c_Sphere->m_Rotation = c_Transform->m_Rotation;
       c_Sphere->m_Angle = c_Transform->m_Angle;
+      if (c_Texture != nullptr)
+      {
+        c_Sphere->m_Texture = c_Texture->m_Texture;
+      }
     }
 
     // Update entity components

@@ -114,7 +114,7 @@ struct Andromeda::Components::Quad : public Andromeda::Entity
   {
     m_Name = "Quad";
     m_Renderer.Init(
-        OpenGL::Shader("./shaders/basic/color.frag", "./shaders/basic/color.vert"),
+        OpenGL::Shader("./engine/assets/shaders/basic/color.frag", "./engine/assets/shaders/basic/color.vert"),
         OpenGL::VertexBuffer(18 * sizeof(float)));
   };
 
@@ -137,12 +137,26 @@ struct Andromeda::Components::Quad : public Andromeda::Entity
   };
 };
 
+struct Andromeda::Components::Texture2d : public Andromeda::Entity
+{
+
+  const char *m_Path;
+  uint32_t m_Texture;
+
+  Texture2d(const char *path) : m_Path(path)
+  {
+    m_Name = "Texture2d";
+    L::Graphics::OpenGL::Legacy::CreateTexture(m_Path, m_Texture);
+  }
+};
+
 struct Andromeda::Components::Sphere : public Andromeda::Entity
 {
 
   float m_Angle = 0.0f;
-  uint32_t m_Segments = 100;
+  uint32_t m_Segments = 80;
   float m_Radius = 10.0f;
+  uint32_t m_Texture;
 
   Sphere()
   {
@@ -155,11 +169,16 @@ struct Andromeda::Components::Sphere : public Andromeda::Entity
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     if (m_Angle != 0.0f)
     {
       glRotatef(m_Angle, m_Rotation.x, m_Rotation.y, m_Rotation.z);
+    }
+
+    if (m_Texture)
+    {
+      glBindTexture(GL_TEXTURE_2D, m_Texture);
+      glEnable(GL_TEXTURE_2D);
     }
 
     // yellow diffuse : color where light hit directly the object's surface
@@ -183,12 +202,11 @@ struct Andromeda::Components::Sphere : public Andromeda::Entity
     glEnable(GL_LIGHTING);
 
     Andromeda_2d_begin(Andromeda_triangles);
-    // vec3 color(1, 0, 0);
-    // OpenGL::Legacy::fill_color(color);
     OpenGL::Legacy::draw_sphere(m_Position, m_Segments, m_Radius);
     Andromeda_2d_end();
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glDisable(GL_TEXTURE_2D);
     glDisable(GL_LIGHT0);
     glDisable(GL_LIGHTING);
     glPopMatrix();
