@@ -6,7 +6,7 @@
 #include "component/component.hpp"
 
 #include "../../libs/libs.hpp"
-#define ANDROMEDA_EDITOR
+
 #ifdef ANDROMEDA_EDITOR
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
