@@ -80,6 +80,15 @@ struct TypeName<Andromeda::Components::Texture2d>
   }
 };
 
+template <>
+struct TypeName<Andromeda::Components::LegacyQuad>
+{
+  static const char *Get()
+  {
+    return "LegacyQuad";
+  }
+};
+
 struct Andromeda::Component
 {
   const char *name;

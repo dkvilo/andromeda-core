@@ -1,10 +1,14 @@
-#version 450 core
+#version 450 core 
 
-layout (location = 0) out vec3 o_Color;
-
-uniform vec3 u_Color;
+in vec3 o_Color;
+in float o_Time;
+out vec3 color;
 
 void main()
 {
-	o_Color = u_Color;
+	color = vec3(
+    abs(sin(o_Color.r * o_Time)),
+    abs(cos(o_Color.g * o_Time)),
+    abs(sin(o_Color * o_Time))
+  );
 }

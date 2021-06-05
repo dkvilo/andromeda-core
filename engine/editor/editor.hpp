@@ -16,6 +16,8 @@
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include "window/window.hpp"
 
+#include "glm/gtc/type_ptr.hpp"
+
 class Andromeda::Editor
 {
 private:
@@ -330,10 +332,10 @@ private:
     {
       ImGui::Separator();
       ImGui::Text("%s", transform->m_Name);
-      ImGui::SliderFloat3("Position", (float *)&transform->m_Position, -10.0f, 10.f);
+      ImGui::SliderFloat3("Position", glm::value_ptr(transform->m_Position), -10.0f, 10.f);
       ImGui::SliderFloat("Scale", &transform->m_Scale, 0, 10);
       ImGui::Text("Rotation");
-      ImGui::SliderFloat3("xyz", (float *)&transform->m_Rotation, -1, 1);
+      ImGui::SliderFloat3("xyz", glm::value_ptr(transform->m_Rotation), -1, 1);
       ImGui::SliderFloat("Angle", &transform->m_Angle, -360, 360);
     }
 
@@ -343,7 +345,7 @@ private:
       ImGui::Separator();
       ImGui::Checkbox(color_material->m_Name, &color_material->m_Flag);
       ImGui::Text("Color");
-      ImGui::ColorEdit3("Primary", (float *)&color_material->m_Color);
+      ImGui::ColorEdit3("Primary", glm::value_ptr(color_material->m_Color));
     }
 
     Andromeda::Components::Shape2d *shape = static_cast<Andromeda::Components::Shape2d *>(ent->GetComponent("Shape2d"));
@@ -375,6 +377,19 @@ private:
       ImGui::Text("ID: %d", texture->m_Texture);
     }
 
+    Andromeda::Components::LegacyQuad *legacyQuad = static_cast<Andromeda::Components::LegacyQuad *>(ent->GetComponent("LegacyQuad"));
+    if (legacyQuad != nullptr)
+    {
+      ImGui::Separator();
+      ImGui::Text("%s", legacyQuad->m_Name);
+      ImGui::Text("Dimensions");
+      ImGui::Checkbox("Use Transform", &legacyQuad->m_UseTransform);
+      if (!legacyQuad->m_UseTransform)
+      {
+        ImGui::SliderFloat2("XY", glm::value_ptr(legacyQuad->m_Dimensions), 0.1f, 10.f);
+      }
+    }
+
     Andromeda::Components::Stroke *stroke = static_cast<Andromeda::Components::Stroke *>(ent->GetComponent("Stroke"));
     if (stroke != nullptr)
     {
@@ -386,7 +401,7 @@ private:
       ImGui::SliderInt("Count", &stroke->m_Segments, 3, 100);
       ImGui::Text("Line");
       ImGui::SliderInt("Width", &stroke->m_LineWidth, 1, 10);
-      ImGui::ColorEdit3("Border", (float *)&stroke->m_ColorMaterial->m_Color);
+      ImGui::ColorEdit3("Border", glm::value_ptr(stroke->m_ColorMaterial->m_Color));
     }
 #endif
   }

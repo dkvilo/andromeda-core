@@ -23,6 +23,7 @@ namespace Andromeda
   struct UI;
 
   class Editor;
+  class EditorCamera;
   class Window;
   class Log;
 }
@@ -34,6 +35,7 @@ namespace Andromeda::Components
   struct Transform;
   struct Stroke;
   struct Quad;
+  struct LegacyQuad;
   struct Sphere;
   struct Texture2d;
 

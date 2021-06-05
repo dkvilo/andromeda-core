@@ -25,6 +25,7 @@ namespace L
       class Shader;
       class VertexBuffer;
       class IndexBuffer;
+      class Texture;
     };
   }
 

@@ -19,17 +19,23 @@ public:
   {
     m_FragmentShader = Compile(L::Fs::ReadFileContent(frag), GL_FRAGMENT_SHADER);
     m_VertexShader = Compile(L::Fs::ReadFileContent(vert), GL_VERTEX_SHADER);
+    CreateProgram(m_FragmentShader, m_VertexShader);
   }
 
-  inline void Use()
+  inline void Use() const
   {
     glUseProgram(m_RendererID);
   }
 
-  unsigned int RendererId()
+  inline void Unbind() const {
+    glUseProgram(0);
+    glDeleteProgram(m_RendererID);
+  }
+
+  unsigned int RendererId() const
   {
     return m_RendererID;
-  };
+  }
 
 private:
   inline unsigned int Compile(const char *content, unsigned int type)
@@ -55,7 +61,7 @@ private:
     return shader;
   }
 
-  inline void CreateProgram(unsigned int fs, unsigned int vs)
+  inline void CreateProgram(uint32_t fs, uint32_t vs)
   {
     m_RendererID = glCreateProgram();
     glAttachShader(m_RendererID, fs);

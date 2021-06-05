@@ -16,9 +16,6 @@
 #include "../libs.hpp"
 #include "../math/functions.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb/image.h"
-
 #include <math.h>
 
 using namespace glm;
@@ -35,6 +32,11 @@ public:
   static void fill_color(vec3 &color)
   {
     glColor3f(color.r, color.g, color.b);
+  }
+
+  static void draw_quad(vec3 &position, vec2 &dimensions)
+  {
+    Get().draw_quad_impl(position, dimensions);
   }
 
   static void draw_circle(vec3 position, float r, int segments)
@@ -57,44 +59,27 @@ public:
     Get().draw_sphere_impl(position, segments, r);
   }
 
-  static void CreateTexture(const char *path, unsigned int &texture)
-  {
-    int width, height, channels;
-    stbi_set_flip_vertically_on_load(0);
-
-    unsigned char *dataBuffer = stbi_load(path, &width, &height, &channels, 0);
-    ASSERT(dataBuffer, "(STB_IMAGE): Unable to load texture", NULL);
-
-    glGenTextures(1, &texture);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    GLenum texDataFormat;
-    if (channels == 4)
-    {
-      texDataFormat = GL_RGBA;
-    }
-
-    if (channels == 3)
-    {
-      texDataFormat = GL_RGB;
-    }
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, texDataFormat, width, height, 0, texDataFormat, GL_UNSIGNED_BYTE, dataBuffer);
-    stbi_image_free(dataBuffer);
-  }
-
 private:
   void blend_alpha_impl()
   {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  }
+
+  void draw_quad_impl(vec3 &position, vec2 dimensions)
+  {
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(position.x, position.y + dimensions.x, 0.0f);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(position.x + dimensions.x, position.y + dimensions.y, 0.0f);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(position.x + dimensions.x, position.y, 0.0f);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(position.x, position.y, 0.0f);
   }
 
   void draw_filled_circle_impl(float cx, float cy, float r, int segments, int max_triangle)

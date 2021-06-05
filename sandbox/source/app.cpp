@@ -19,23 +19,33 @@ int main(int argc, char const *argv[])
   Andromeda::Editor::SetWindow(app.Window());
   Andromeda::Editor::Init();
 
-  GameObject player = GameObject();
-  player.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
-  player.AddComponent<Shape2d>(new Shape2d());
-  player.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-  Andromeda::SceneManager::AddEntity(&player);
+  GameObject complexShape = GameObject("Complex Shape");
+  complexShape.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
+  complexShape.AddComponent<Shape2d>(new Shape2d());
+  complexShape.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  Andromeda::SceneManager::AddEntity(&complexShape);
 
-  GameObject quad = GameObject("Test Shape");
-  quad.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
-  quad.AddComponent<Quad>(new Quad());
-  quad.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-  Andromeda::SceneManager::AddEntity(&quad);
+  // 
+  // 2D batch renderer in development
+  // 
+  // GameObject quad = GameObject("Test Shape");
+  // // quad.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
+  // quad.AddComponent<Quad>(new Quad());
+  // quad.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  // Andromeda::SceneManager::AddEntity(&quad);
+
+
+  GameObject texturedQuad = GameObject("Textured Quad");
+  texturedQuad.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
+  texturedQuad.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
+  texturedQuad.AddComponent<LegacyQuad>(new LegacyQuad());
+  texturedQuad.AddComponent<Texture2d>(new Texture2d("./sandbox/assets/texture/01.jpg"));
+  Andromeda::SceneManager::AddEntity(&texturedQuad);
 
   GameObject ball = GameObject("Ball");
   ball.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
   ball.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
   ball.AddComponent<Sphere>(new Sphere());
-  ball.AddComponent<Texture2d>(new Texture2d("./sandbox/assets/texture/bg.png"));
   Andromeda::SceneManager::AddEntity(&ball);
 
   RGBColorMaterial *colorMaterial = static_cast<RGBColorMaterial *>(ball.GetComponent("RGBColorMaterial"));

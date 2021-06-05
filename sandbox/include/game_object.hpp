@@ -21,6 +21,7 @@ struct GameObject : public Andromeda::Entity
   Quad *c_Quad;
   Sphere *c_Sphere;
   Texture2d *c_Texture;
+  LegacyQuad *c_LegacyQuad;
 
   bool m_Initialized = false;
 
@@ -45,6 +46,7 @@ struct GameObject : public Andromeda::Entity
       c_Quad = static_cast<Quad *>(GetComponent("Quad"));
       c_Sphere = static_cast<Sphere *>(GetComponent("Sphere"));
       c_Texture = static_cast<Texture2d *>(GetComponent("Texture2d"));
+      c_LegacyQuad = static_cast<LegacyQuad *>(GetComponent("LegacyQuad"));
 
       m_Initialized = true;
     }
@@ -86,6 +88,23 @@ struct GameObject : public Andromeda::Entity
       {
         c_Sphere->m_Texture = c_Texture->m_Texture;
       }
+    }
+
+    if (c_LegacyQuad != nullptr)
+    {
+      c_LegacyQuad->m_Position = c_Transform->m_Position;
+      c_LegacyQuad->m_Rotation = c_Transform->m_Rotation;
+      c_LegacyQuad->m_Angle = c_Transform->m_Angle; 
+      
+      if (c_LegacyQuad->m_UseTransform)
+      {
+        c_LegacyQuad->m_Dimensions = vec2(c_Transform->m_Scale);
+      }
+      
+      if (c_Texture != nullptr)
+      {
+        c_LegacyQuad->m_Texture = c_Texture->m_Texture;
+      } 
     }
 
     // Update entity components

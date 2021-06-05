@@ -9,8 +9,11 @@
 #include "../libs/libs.hpp"
 #include "../libs/opengl/legacy.hpp"
 #include "../libs/opengl/shader.hpp"
+#include "../libs/opengl/texture.hpp"
 
+#include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
+#include "glm/mat4x4.hpp"
 
 using namespace glm;
 using namespace L::Graphics;
@@ -105,34 +108,87 @@ struct Andromeda::Components::Transform : public Andromeda::Entity
   void update(double dt){};
 };
 
+struct Andromeda::Components::LegacyQuad : public Andromeda::Entity
+{
+
+  float m_Radius = 100.f;
+  float m_Angle = 0.0f;
+  
+  uint32_t m_Texture;
+  
+  bool m_UseTransform = true;
+  vec2 m_Dimensions;
+
+  LegacyQuad(): m_Dimensions(0.5f, 0.5f)
+  {
+    m_Name = "LegacyQuad";
+  };
+
+  void update(double dt)
+  {
+    glPushMatrix();
+    glEnable(GL_COLOR_MATERIAL);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    if (m_Angle != 0.0f)
+    {
+      glRotatef(m_Angle, m_Rotation.x, m_Rotation.y, m_Rotation.z);
+    }
+    
+    if (m_Texture)
+    {
+      glBindTexture(GL_TEXTURE_2D, m_Texture);
+      glEnable(GL_TEXTURE_2D);
+    }
+
+    Andromeda_2d_begin(Andromeda_quads);
+    OpenGL::Legacy::draw_quad(m_Position, m_Dimensions);
+    Andromeda_2d_end();
+
+    glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+  };
+};
+
 struct Andromeda::Components::Quad : public Andromeda::Entity
 {
 
   Andromeda::Renderer m_Renderer;
+
+  mat4 m_ProjectionMatrix = mat4(1.0f);
 
   Quad()
   {
     m_Name = "Quad";
     m_Renderer.Init(
         OpenGL::Shader("./engine/assets/shaders/basic/color.frag", "./engine/assets/shaders/basic/color.vert"),
-        OpenGL::VertexBuffer(18 * sizeof(float)));
+        OpenGL::VertexBuffer(36 * sizeof(float)));
+
+    float vertexBufferData[36] = {
+      // Positions         // colors 
+      -0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f,
+       0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f,
+      -0.1,   0.1f, 0.0f,  1.0f, 1.0f, 1.0f,
+
+      -0.1f,  0.1f, 0.0f,  1.0f, 1.0f, 1.0f,
+       0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f,
+       0.1f,  0.1f, 0.0f,  1.0f, 1.0f, 1.0f,
+    };
+
+    m_Renderer.ResetSubmitton();
+    m_Renderer.Submit(vertexBufferData, 36 * sizeof(float), 6, 6 * sizeof(float));
   };
 
   void update(double dt)
   {
-
-    m_Renderer.ResetSubmitton();
-
-    float positions[18] = {
-        -0.1f + m_Position.x, -0.1f + m_Position.y, 0.0f,
-        0.1f + m_Position.x, -0.1f + m_Position.y, 0.0f,
-        -0.1 + m_Position.x, 0.1f + m_Position.y, 0.0f,
-
-        -0.1f + m_Position.x, 0.1f + m_Position.y, 0.0f,
-        0.1f + m_Position.x, -0.1f + m_Position.y, 0.0f,
-        0.1f + m_Position.x, 0.1f + m_Position.y, 0.0f};
-
-    m_Renderer.Submit(positions, 18 * sizeof(float), 3, 3 * sizeof(float));
+    // 
+    // m_Renderer.SetViewProjection(m_ProjectionMatrix);
+    // 
+    // We meed way to acces window information
+    // m_Renderer.SetResolution(vec2(1080, 720)); 
+    m_Renderer.SetTime(dt);
     m_Renderer.Draw();
   };
 };
@@ -146,7 +202,7 @@ struct Andromeda::Components::Texture2d : public Andromeda::Entity
   Texture2d(const char *path) : m_Path(path)
   {
     m_Name = "Texture2d";
-    L::Graphics::OpenGL::Legacy::CreateTexture(m_Path, m_Texture);
+    L::Graphics::OpenGL::Texture::Create(m_Path, m_Texture);
   }
 };
 
