@@ -3,6 +3,11 @@
 
 #include "andromeda.hpp"
 
+#include "glm/vec2.hpp"
+#include "glm/vec3.hpp"
+#include "glm/vec4.hpp"
+#include "glm/mat4x4.hpp"
+
 #include "entity/entity.hpp"
 #include "renderer/renderer.hpp"
 
@@ -10,10 +15,6 @@
 #include "../libs/opengl/legacy.hpp"
 #include "../libs/opengl/shader.hpp"
 #include "../libs/opengl/texture.hpp"
-
-#include "glm/vec2.hpp"
-#include "glm/vec3.hpp"
-#include "glm/mat4x4.hpp"
 
 using namespace glm;
 using namespace L::Graphics;
@@ -41,6 +42,7 @@ struct Andromeda::Components::Stroke : public Andromeda::Entity
   float m_Offset = 0.0f;
   float m_Radius = 10.0f;
   float m_Angle = 0.0f;
+
   int m_Segments = 100;
   int m_LineWidth = 8;
 
@@ -48,7 +50,7 @@ struct Andromeda::Components::Stroke : public Andromeda::Entity
   {
     m_Name = "Stroke2d";
     m_Rotation = vec3(0, 0, 0);
-  };
+  }
 
   void update(double dt)
   {
@@ -63,7 +65,12 @@ struct Andromeda::Components::Stroke : public Andromeda::Entity
     OpenGL::Legacy::draw_circle(m_Position, m_Radius + m_Offset, m_Segments);
     Andromeda_2d_end();
     glPopMatrix();
-  };
+  }
+  
+  ~Stroke()
+  {
+    delete m_ColorMaterial;
+  }
 };
 
 struct Andromeda::Components::Shape2d : public Andromeda::Entity
@@ -77,7 +84,7 @@ struct Andromeda::Components::Shape2d : public Andromeda::Entity
   Shape2d()
   {
     m_Name = "Shape2d";
-  };
+  }
 
   void update(double dt)
   {
@@ -90,7 +97,7 @@ struct Andromeda::Components::Shape2d : public Andromeda::Entity
     OpenGL::Legacy::draw_filled_circle(m_Position, m_Radius, m_Segments, m_Triangles);
     Andromeda_2d_end();
     glPopMatrix();
-  };
+  }
 };
 
 struct Andromeda::Components::Transform : public Andromeda::Entity
@@ -103,14 +110,13 @@ struct Andromeda::Components::Transform : public Andromeda::Entity
     m_Name = "Transform";
     m_Position = pos;
     m_Rotation = rot;
-  };
+  }
 
-  void update(double dt){};
+  void update(double dt){}
 };
 
 struct Andromeda::Components::LegacyQuad : public Andromeda::Entity
 {
-
   float m_Radius = 100.f;
   float m_Angle = 0.0f;
   
@@ -119,10 +125,15 @@ struct Andromeda::Components::LegacyQuad : public Andromeda::Entity
   bool m_UseTransform = true;
   vec2 m_Dimensions;
 
+  // 
+  // TODO: We need a better way to access window width and height
+  // 
+  mat4 m_Projection = ortho(0.0f, 1080.0f, 0.0f, 720.0f, 0.00001f, -100000.0f);
+
   LegacyQuad(): m_Dimensions(0.5f, 0.5f)
   {
     m_Name = "LegacyQuad";
-  };
+  }
 
   void update(double dt)
   {
@@ -144,12 +155,12 @@ struct Andromeda::Components::LegacyQuad : public Andromeda::Entity
     }
 
     Andromeda_2d_begin(Andromeda_quads);
-    OpenGL::Legacy::draw_quad(m_Position, m_Dimensions);
+    OpenGL::Legacy::draw_quad(vec3(vec4(m_Position, 1.0f) * m_Projection), m_Dimensions);
     Andromeda_2d_end();
 
     glDisable(GL_TEXTURE_2D);
     glPopMatrix();
-  };
+  }
 };
 
 struct Andromeda::Components::Quad : public Andromeda::Entity
@@ -163,8 +174,12 @@ struct Andromeda::Components::Quad : public Andromeda::Entity
   {
     m_Name = "Quad";
     m_Renderer.Init(
-        OpenGL::Shader("./engine/assets/shaders/basic/color.frag", "./engine/assets/shaders/basic/color.vert"),
-        OpenGL::VertexBuffer(36 * sizeof(float)));
+      OpenGL::Shader(
+        "./engine/assets/shaders/basic/color.frag",
+        "./engine/assets/shaders/basic/color.vert"
+      ),
+      OpenGL::VertexBuffer(36 * sizeof(float))
+    );
 
     float vertexBufferData[36] = {
       // Positions         // colors 
@@ -179,7 +194,7 @@ struct Andromeda::Components::Quad : public Andromeda::Entity
 
     m_Renderer.ResetSubmitton();
     m_Renderer.Submit(vertexBufferData, 36 * sizeof(float), 6, 6 * sizeof(float));
-  };
+  }
 
   void update(double dt)
   {
@@ -190,12 +205,11 @@ struct Andromeda::Components::Quad : public Andromeda::Entity
     // m_Renderer.SetResolution(vec2(1080, 720)); 
     m_Renderer.SetTime(dt);
     m_Renderer.Draw();
-  };
+  }
 };
 
 struct Andromeda::Components::Texture2d : public Andromeda::Entity
 {
-
   const char *m_Path;
   uint32_t m_Texture;
 
@@ -208,10 +222,10 @@ struct Andromeda::Components::Texture2d : public Andromeda::Entity
 
 struct Andromeda::Components::Sphere : public Andromeda::Entity
 {
-
   float m_Angle = 0.0f;
-  uint32_t m_Segments = 80;
   float m_Radius = 10.0f;
+  
+  uint32_t m_Segments = 80;
   uint32_t m_Texture;
 
   Sphere()
@@ -266,7 +280,7 @@ struct Andromeda::Components::Sphere : public Andromeda::Entity
     glDisable(GL_LIGHT0);
     glDisable(GL_LIGHTING);
     glPopMatrix();
-  };
+  }
 };
 
 #endif

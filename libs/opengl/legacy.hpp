@@ -34,7 +34,7 @@ public:
     glColor3f(color.r, color.g, color.b);
   }
 
-  static void draw_quad(vec3 &position, vec2 &dimensions)
+  static void draw_quad(vec3 &&position, vec2 &dimensions)
   {
     Get().draw_quad_impl(position, dimensions);
   }
