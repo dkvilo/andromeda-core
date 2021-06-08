@@ -43,7 +43,12 @@ namespace Andromeda::Components
 
 namespace Andromeda::Types
 {
-  struct WindowConfog;
+	struct WindowConfog; 
+	struct Component
+	{
+		const char *name;
+		Andromeda::Entity *comp;
+	};
 }
 
 #endif // __ANDROMEDA_CORE_API__

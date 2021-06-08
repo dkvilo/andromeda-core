@@ -10,25 +10,25 @@
 static inline const char *L::Fs::ReadFileContent(const char *path)
 {
 
-  FILE *infile;
-  char *buffer;
-  long numbytes;
+	FILE *infile;
+	char *buffer;
+	long numbytes;
 
-  infile = fopen(path, "r");
-  ASSERT(infile, "Fopen: Unable to open file", path);
+	infile = fopen(path, "r");
+	ASSERT(infile, "Fopen: Unable to open file", path);
 
-  fseek(infile, 0L, SEEK_END);
-  numbytes = ftell(infile);
+	fseek(infile, 0L, SEEK_END);
+	numbytes = ftell(infile);
 
-  fseek(infile, 0L, SEEK_SET);
+	fseek(infile, 0L, SEEK_SET);
 
-  buffer = (char *)calloc(numbytes, sizeof(char));
-  ASSERT(buffer, "unable to allocate data", NULL);
+	buffer = (char *)calloc(numbytes, sizeof(char));
+	ASSERT(buffer, "unable to allocate data", NULL);
 
-  fread(buffer, sizeof(char), numbytes, infile);
-  fclose(infile);
+	fread(buffer, sizeof(char), numbytes, infile);
+	fclose(infile);
 
-  return buffer;
+	return buffer;
 }
 
 #endif // __ANDROMEDA_LIBS_UTILS__
