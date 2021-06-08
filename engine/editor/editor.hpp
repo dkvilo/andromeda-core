@@ -332,11 +332,11 @@ private:
     {
       ImGui::Separator();
       ImGui::Text("%s", transform->m_Name);
-      ImGui::SliderFloat3("Position", glm::value_ptr(transform->m_Position), -10.0f, 10.f);
-      ImGui::SliderFloat("Scale", &transform->m_Scale, 0, 10);
+			ImGui::DragFloat3("Position", glm::value_ptr(transform->m_Position));
+      ImGui::DragFloat("Scale", &transform->m_Scale);
       ImGui::Text("Rotation");
-      ImGui::SliderFloat3("xyz", glm::value_ptr(transform->m_Rotation), -1, 1);
-      ImGui::SliderFloat("Angle", &transform->m_Angle, -360, 360);
+      ImGui::DragFloat3("xyz", glm::value_ptr(transform->m_Rotation), -1, 1);
+      ImGui::DragFloat("Angle", &transform->m_Angle);
     }
 
     Andromeda::Components::RGBColorMaterial *color_material = static_cast<Andromeda::Components::RGBColorMaterial *>(ent->GetComponent("RGBColorMaterial"));
@@ -354,9 +354,9 @@ private:
       ImGui::Separator();
       ImGui::Checkbox(shape->m_Name, &shape->m_Flag);
       ImGui::Text("Segments");
-      ImGui::SliderInt("Face", &shape->m_Segments, 0, shape->m_Triangles);
+      ImGui::DragInt("Face", &shape->m_Segments, 0, shape->m_Triangles);
       ImGui::Text("Triangles");
-      ImGui::SliderInt("Max Triangles", &shape->m_Triangles, 3, 100);
+      ImGui::DragInt("Max Triangles", &shape->m_Triangles, 3, 100);
     }
 
     Andromeda::Components::Quad *quad = static_cast<Andromeda::Components::Quad *>(ent->GetComponent("Quad"));
@@ -386,7 +386,7 @@ private:
       ImGui::Checkbox("Use Transform", &legacyQuad->m_UseTransform);
       if (!legacyQuad->m_UseTransform)
       {
-        ImGui::SliderFloat2("XY", glm::value_ptr(legacyQuad->m_Dimensions), 0.1f, 10.f);
+        ImGui::DragFloat2("XY", glm::value_ptr(legacyQuad->m_Dimensions), 0.1f, 10.f);
       }
     }
 
@@ -396,11 +396,11 @@ private:
       ImGui::Separator();
       ImGui::Checkbox(stroke->m_Name, &stroke->m_Flag);
       ImGui::Text("Offset");
-      ImGui::SliderFloat("xy", &stroke->m_Offset, 0, 100);
+      ImGui::DragFloat("xy", &stroke->m_Offset, 0, 100);
       ImGui::Text("Segments");
-      ImGui::SliderInt("Count", &stroke->m_Segments, 3, 100);
+      ImGui::DragInt("Count", &stroke->m_Segments, 3, 100);
       ImGui::Text("Line");
-      ImGui::SliderInt("Width", &stroke->m_LineWidth, 1, 10);
+      ImGui::DragInt("Width", &stroke->m_LineWidth, 1, 10);
       ImGui::ColorEdit3("Border", glm::value_ptr(stroke->m_ColorMaterial->m_Color));
     }
 #endif
