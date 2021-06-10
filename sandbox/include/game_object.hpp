@@ -22,6 +22,7 @@ struct GameObject : public Andromeda::Entity
 	Sphere *c_Sphere;
 	Texture2d *c_Texture;
 	LegacyQuad *c_LegacyQuad;
+	ForeignTransform *c_ForeignTransform;
 
 	bool m_Initialized = false;
 
@@ -47,6 +48,7 @@ struct GameObject : public Andromeda::Entity
 			c_Sphere = static_cast<Sphere *>(GetComponent("Sphere"));
 			c_Texture = static_cast<Texture2d *>(GetComponent("Texture2d"));
 			c_LegacyQuad = static_cast<LegacyQuad *>(GetComponent("LegacyQuad"));
+			c_ForeignTransform = static_cast<ForeignTransform *>(GetComponent("ForeignTransform"));
 
 			m_Initialized = true;
 		}
@@ -54,6 +56,29 @@ struct GameObject : public Andromeda::Entity
 		if (c_Transform != nullptr)
 		{
 			m_Position = c_Transform->m_Position;
+		}
+
+		if (c_ForeignTransform != nullptr)
+		{
+			if (c_ForeignTransform->m_ExtendTransform)
+			{
+				c_Transform->m_Position = c_ForeignTransform->m_Position;
+			}
+
+			if (c_ForeignTransform->m_ExtendRotationDireaction)
+			{
+				c_Transform->m_Rotation = c_ForeignTransform->m_Rotation;
+			}
+
+			if (c_ForeignTransform->m_ExtendRotationAngle)
+			{
+				c_Transform->m_Angle = c_ForeignTransform->m_Angle;
+			}
+
+			if (c_ForeignTransform->m_ExtendScale)
+			{
+				c_Transform->m_Scale = c_ForeignTransform->m_Scale;
+			}
 		}
 
 		if (c_Shape != nullptr)

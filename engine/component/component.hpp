@@ -124,6 +124,67 @@ struct Andromeda::Components::Transform : public Andromeda::Entity
 	void update(double dt) {}
 };
 
+struct Andromeda::Components::ForeignTransform : public Andromeda::Entity
+{
+	float m_Scale = 0.5f;
+	float m_Angle = 0.0f;
+
+	bool m_ExtendRotationDireaction;
+	bool m_ExtendRotationAngle;
+	bool m_ExtendTransform;
+	bool m_ExtendScale;
+
+	Andromeda::Components::Transform *c_OtherTransform;
+
+	ForeignTransform()
+		: c_OtherTransform(nullptr),
+		  m_ExtendRotationAngle(false),
+		  m_ExtendRotationDireaction(false),
+		  m_ExtendScale(false),
+		  m_ExtendTransform(false)
+	{
+		m_Name = "ForeignTransform";
+		m_Flag = false;
+	}
+
+	void SetOhterTransfor(Andromeda::Components::Transform *other)
+	{
+		c_OtherTransform = other;
+	}
+
+	void update(double dt)
+	{
+		if (c_OtherTransform != nullptr)
+		{
+
+			if (m_ExtendTransform)
+			{
+				m_Position = c_OtherTransform->m_Position;
+			}
+
+			if (m_ExtendRotationDireaction)
+			{
+				m_Rotation = c_OtherTransform->m_Rotation;
+			}
+
+			if (m_ExtendRotationAngle)
+			{
+				m_Angle = c_OtherTransform->m_Angle;
+			}
+
+			if (m_ExtendScale)
+			{
+				m_Scale = c_OtherTransform->m_Scale;
+			}
+		}
+	}
+
+	~ForeignTransform()
+	{
+		delete c_OtherTransform;
+	}
+};
+
 struct Andromeda::Components::LegacyQuad : public Andromeda::Entity, public Andromeda::Component
 {
 	float m_Radius = 100.f;
@@ -181,50 +242,50 @@ struct Andromeda::Components::Quad : public Andromeda::Entity
 	{
 		m_Name = "Quad";
 		m_Renderer.Init(
-				OpenGL::Shader(
-						"./engine/assets/shaders/basic/color.frag",
-						"./engine/assets/shaders/basic/color.vert"),
-				OpenGL::VertexBuffer(36 * sizeof(float)));
+			OpenGL::Shader(
+				"./engine/assets/shaders/basic/color.frag",
+				"./engine/assets/shaders/basic/color.vert"),
+			OpenGL::VertexBuffer(36 * sizeof(float)));
 
 		float vertexBufferData[36] = {
-				// Positions         // colors
-				-0.1f,
-				-0.1f,
-				0.0f,
-				1.0f,
-				1.0f,
-				1.0f,
-				0.1f,
-				-0.1f,
-				0.0f,
-				1.0f,
-				1.0f,
-				1.0f,
-				-0.1,
-				0.1f,
-				0.0f,
-				1.0f,
-				1.0f,
-				1.0f,
+			// Positions         // colors
+			-0.1f,
+			-0.1f,
+			0.0f,
+			1.0f,
+			1.0f,
+			1.0f,
+			0.1f,
+			-0.1f,
+			0.0f,
+			1.0f,
+			1.0f,
+			1.0f,
+			-0.1,
+			0.1f,
+			0.0f,
+			1.0f,
+			1.0f,
+			1.0f,
 
-				-0.1f,
-				0.1f,
-				0.0f,
-				1.0f,
-				1.0f,
-				1.0f,
-				0.1f,
-				-0.1f,
-				0.0f,
-				1.0f,
-				1.0f,
-				1.0f,
-				0.1f,
-				0.1f,
-				0.0f,
-				1.0f,
-				1.0f,
-				1.0f,
+			-0.1f,
+			0.1f,
+			0.0f,
+			1.0f,
+			1.0f,
+			1.0f,
+			0.1f,
+			-0.1f,
+			0.0f,
+			1.0f,
+			1.0f,
+			1.0f,
+			0.1f,
+			0.1f,
+			0.0f,
+			1.0f,
+			1.0f,
+			1.0f,
 		};
 
 		m_Renderer.ResetSubmitton();

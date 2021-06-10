@@ -43,6 +43,11 @@ public:
 		m_ElapsedTime = ct;
 	}
 
+	double GetScaledElapsedTime(float scaler) const
+	{
+		return m_ElapsedTime * scaler;
+	}
+
 	void Resize()
 	{
 		glfwGetWindowSize(GetWidnowId(), &m_Width, &m_Height);

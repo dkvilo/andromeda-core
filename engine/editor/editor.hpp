@@ -333,10 +333,10 @@ private:
 			ImGui::Separator();
 			ImGui::Text("%s", transform->m_Name);
 			ImGui::DragFloat3("Position", glm::value_ptr(transform->m_Position));
-			ImGui::DragFloat("Scale", &transform->m_Scale);
+			ImGui::SliderFloat("Scale", &transform->m_Scale, 0.0f, 10.f);
 			ImGui::Text("Rotation");
-			ImGui::DragFloat3("xyz", glm::value_ptr(transform->m_Rotation), -1, 1);
-			ImGui::DragFloat("Angle", &transform->m_Angle);
+			ImGui::SliderFloat3("xyz", glm::value_ptr(transform->m_Rotation), -1, 1);
+			ImGui::SliderFloat("Angle", &transform->m_Angle, -360.0f, 360.f);
 		}
 
 		Andromeda::Components::RGBColorMaterial *color_material = static_cast<Andromeda::Components::RGBColorMaterial *>(ent->GetComponent("RGBColorMaterial"));
@@ -354,9 +354,9 @@ private:
 			ImGui::Separator();
 			ImGui::Checkbox(shape->m_Name, &shape->m_Flag);
 			ImGui::Text("Segments");
-			ImGui::DragInt("Face", &shape->m_Segments, 0, shape->m_Triangles);
+			ImGui::SliderInt("Face", &shape->m_Segments, 0, shape->m_Triangles);
 			ImGui::Text("Triangles");
-			ImGui::DragInt("Max Triangles", &shape->m_Triangles, 3, 100);
+			ImGui::SliderInt("Max Triangles", &shape->m_Triangles, 3, 100);
 		}
 
 		Andromeda::Components::Quad *quad = static_cast<Andromeda::Components::Quad *>(ent->GetComponent("Quad"));
@@ -403,6 +403,55 @@ private:
 			ImGui::DragInt("Width", &stroke->m_LineWidth, 1, 10);
 			ImGui::ColorEdit3("Border", glm::value_ptr(stroke->m_ColorMaterial->m_Color));
 		}
+
+		Andromeda::Components::ForeignTransform *foreignTransform =
+			static_cast<Andromeda::Components::ForeignTransform *>(ent->GetComponent("ForeignTransform"));
+		if (foreignTransform != nullptr)
+		{
+			ImGui::Separator();
+			ImGui::Checkbox(foreignTransform->m_Name, &foreignTransform->m_Flag);
+
+			if (foreignTransform->m_Flag)
+			{
+				static const char *currentItemLabel = "Select Entity";
+				if (ImGui::BeginCombo("##Transform Owner", currentItemLabel))
+				{
+					static auto registrySize = Andromeda::SceneManager::Registry.size();
+					for (uint8_t i = 0; i < registrySize; i++)
+					{
+						const auto entity = Andromeda::SceneManager::GetEntity(i);
+						// skip disabled entity
+						if (!entity->m_Flag)
+						{
+							continue;
+						}
+
+						bool isSelected = (currentItemLabel == entity->m_Name);
+						if (ImGui::Selectable(entity->m_Name, isSelected))
+						{
+							currentItemLabel = entity->m_Name;
+							Andromeda::Components::Transform *otherTransform =
+								static_cast<Andromeda::Components::Transform *>(entity->GetComponent("Transform"));
+							if (otherTransform != nullptr)
+							{
+								foreignTransform->c_OtherTransform = otherTransform;
+							}
+						}
+
+						if (isSelected)
+						{
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+				ImGui::Checkbox("Extend Position", &foreignTransform->m_ExtendTransform);
+				ImGui::Checkbox("Extend Rotation Direction", &foreignTransform->m_ExtendRotationDireaction);
+				ImGui::Checkbox("Extend Rotation Angle", &foreignTransform->m_ExtendRotationAngle);
+				ImGui::Checkbox("Extend Scale", &foreignTransform->m_ExtendScale);
+			}
+		}
+
 #endif
 	}
 

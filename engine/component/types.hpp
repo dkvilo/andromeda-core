@@ -6,83 +6,91 @@
 template <typename T>
 struct TypeName
 {
-  static const char *Get()
-  {
-    return typeid(T).name();
-  }
+	static const char *Get()
+	{
+		return typeid(T).name();
+	}
 };
 
 template <>
 struct TypeName<Andromeda::Components::Transform>
 {
-  static const char *Get()
-  {
-    return "Transform";
-  }
+	static const char *Get()
+	{
+		return "Transform";
+	}
 };
 
 template <>
 struct TypeName<Andromeda::Components::Quad>
 {
-  static const char *Get()
-  {
-    return "Quad";
-  }
+	static const char *Get()
+	{
+		return "Quad";
+	}
 };
 
 template <>
 struct TypeName<Andromeda::Components::RGBColorMaterial>
 {
-  static const char *Get()
-  {
-    return "RGBColorMaterial";
-  }
+	static const char *Get()
+	{
+		return "RGBColorMaterial";
+	}
 };
 
 template <>
 struct TypeName<Andromeda::Components::Shape2d>
 {
-  static const char *Get()
-  {
-    return "Shape2d";
-  }
+	static const char *Get()
+	{
+		return "Shape2d";
+	}
 };
 
 template <>
 struct TypeName<Andromeda::Components::Sphere>
 {
-  static const char *Get()
-  {
-    return "Sphere";
-  }
+	static const char *Get()
+	{
+		return "Sphere";
+	}
 };
 
 template <>
 struct TypeName<Andromeda::Components::Stroke>
 {
-  static const char *Get()
-  {
-    return "Stroke";
-  }
+	static const char *Get()
+	{
+		return "Stroke";
+	}
 };
 
 template <>
 struct TypeName<Andromeda::Components::Texture2d>
 {
-  static const char *Get()
-  {
-    return "Texture2d";
-  }
+	static const char *Get()
+	{
+		return "Texture2d";
+	}
 };
 
 template <>
 struct TypeName<Andromeda::Components::LegacyQuad>
 {
-  static const char *Get()
-  {
-    return "LegacyQuad";
-  }
+	static const char *Get()
+	{
+		return "LegacyQuad";
+	}
 };
 
+template <>
+struct TypeName<Andromeda::Components::ForeignTransform>
+{
+	static const char *Get()
+	{
+		return "ForeignTransform";
+	}
+};
 
-#endif // ANDROMEDA_ENGINE_COMPONENTS_TYPES 
+#endif // ANDROMEDA_ENGINE_COMPONENTS_TYPES

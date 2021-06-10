@@ -38,6 +38,7 @@ int main(int argc, char const *argv[])
 	texturedQuad.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
 	texturedQuad.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
 	texturedQuad.AddComponent<LegacyQuad>(new LegacyQuad());
+	texturedQuad.AddComponent<ForeignTransform>(new ForeignTransform());
 	texturedQuad.AddComponent<Texture2d>(new Texture2d("./sandbox/assets/texture/01.jpg"));
 	Andromeda::SceneManager::AddEntity(&texturedQuad);
 
@@ -81,15 +82,15 @@ int main(int argc, char const *argv[])
 				if (colorMaterial != nullptr && colorMaterial->m_Flag)
 				{
 					colorMaterial->m_Color =
-							vec3(abs(sin(L::Math::Lerp(.0f, .7f, app.m_ElapsedTime))),
-									 abs(cos(L::Math::Lerp(.0f, .7f, app.m_ElapsedTime))),
-									 abs(sin(L::Math::Lerp(.0f, .4f, app.m_ElapsedTime))));
+						vec3(abs(sin(L::Math::Lerp(.0f, .7f, app.m_ElapsedTime))),
+							 abs(cos(L::Math::Lerp(.0f, .7f, app.m_ElapsedTime))),
+							 abs(sin(L::Math::Lerp(.0f, .4f, app.m_ElapsedTime))));
 				}
 
 				// Update rotation angle based on elapsedTime
 				if (transform != nullptr)
 				{
-					transform->m_Angle = 90.0f * app.m_ElapsedTime;
+					transform->m_Angle = 90.0f * app.GetScaledElapsedTime(1.5f);
 				}
 			}
 		}

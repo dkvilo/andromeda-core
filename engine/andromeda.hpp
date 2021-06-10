@@ -38,6 +38,7 @@ namespace Andromeda::Components
 	struct RGBColorMaterial;
 	struct Shape2d;
 	struct Transform;
+	struct ForeignTransform;
 	struct Stroke;
 	struct Quad;
 	struct LegacyQuad;
