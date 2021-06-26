@@ -244,13 +244,13 @@ private:
 #ifdef ANDROMEDA_EDITOR
 		ImGui::Begin("Viewport", 0, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-		ImVec2 windowSize = GetLargestSizeForViewport();
-		ImVec2 windowPos = GetCenteredPositionForViewport(windowSize);
+		glm::vec2 windowSize = GetLargestSizeForViewport();
+		glm::vec2 windowPos = GetCenteredPositionForViewport(windowSize);
 
 		// Center Framebuffer Texture
-		ImGui::SetCursorPos(windowPos);
+		ImGui::SetCursorPos(ImVec2(windowPos.x, windowPos.y));
 
-		ImGui::Image((ImTextureID)texture, windowSize, ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)texture, ImVec2(windowSize.x, windowSize.y), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::End();
 #endif
 	}
@@ -260,8 +260,10 @@ private:
 		return 16.0f / 9.0f;
 	}
 
-	static ImVec2 GetLargestSizeForViewport()
+	static glm::vec2 GetLargestSizeForViewport()
 	{
+#ifdef ANDROMEDA_EDITOR
+
 		ImVec2 windowSize = ImGui::GetContentRegionAvail();
 
 		windowSize.x -= ImGui::GetScrollX();
@@ -276,11 +278,14 @@ private:
 			aspectHight = windowSize.y;
 		}
 
-		return ImVec2(aspectWidth, aspectHight);
+		return glm::vec2(aspectWidth, aspectHight);
+#endif
 	}
 
-	static ImVec2 GetCenteredPositionForViewport(const ImVec2 &aspectSize)
+	static glm::vec2 GetCenteredPositionForViewport(const glm::vec2 &aspectSize)
 	{
+#ifdef ANDROMEDA_EDITOR
+
 		ImVec2 windowSize = ImGui::GetContentRegionAvail();
 
 		windowSize.x -= ImGui::GetScrollX();
@@ -289,7 +294,8 @@ private:
 		float viewportX = (windowSize.x / 2.0f) - (aspectSize.x / 2.0f);
 		float viewportY = (windowSize.y / 2.0f) - (aspectSize.y / 2.0f);
 
-		return ImVec2(viewportX + ImGui::GetCursorPosX(), viewportY + ImGui::GetCursorPosY());
+		return glm::vec2(viewportX + ImGui::GetCursorPosX(), viewportY + ImGui::GetCursorPosY());
+#endif
 	}
 
 	void DrawEntityManagerTool()
