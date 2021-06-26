@@ -4,7 +4,7 @@
 #include "andromeda.hpp"
 
 #include "glad/glad.h"
-#include "../../libs/libs.hpp"
+#include "../../engine/libs/libs.hpp"
 
 #include "GLFW/glfw3.h"
 #include "log/log.hpp"

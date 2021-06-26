@@ -6,8 +6,8 @@
 #include "editor/editor.hpp"
 #include "component/component.hpp"
 
-#include "../../libs/math/functions.hpp"
-#include "../../libs/util/uuid.hpp"
+#include "../../engine/libs/math/functions.hpp"
+#include "../../engine/libs/util/uuid.hpp"
 
 using namespace L::Util;
 using namespace Andromeda::Components;

@@ -18,7 +18,7 @@ Project is very sideeey, It is possible that I'll newer finish it.
   # get dependencies
   git submodule update --init --recursive
 
-  # build dependencies
+  # build required libs
   make build
   
   # build sandbox layer in debug mode (Include Engine editor UI)

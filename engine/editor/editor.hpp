@@ -5,7 +5,7 @@
 #include "entity/entity.hpp"
 #include "component/component.hpp"
 
-#include "../../libs/libs.hpp"
+#include "../../engine/libs/libs.hpp"
 
 #ifdef ANDROMEDA_EDITOR
 #include "imgui.h"
