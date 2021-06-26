@@ -29,7 +29,7 @@ int main(int argc, char const *argv[])
 	// 2D batch renderer in development
 	//
 	// GameObject quad = GameObject("Test Shape");
-	// // quad.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
+	// quad.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
 	// quad.AddComponent<Quad>(new Quad());
 	// quad.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
 	// Andromeda::SceneManager::AddEntity(&quad);
@@ -67,6 +67,9 @@ int main(int argc, char const *argv[])
 		// Update time in sandbox env
 		app.UpdateTime(Andromeda::Window::TimeNow());
 
+#if defined(ANDROMEDA_EDITOR)
+		app.m_FrameBuffer->Bind();
+#endif
 		// Draw in sandbox
 		app.Draw(app.m_Width, app.m_Height);
 
@@ -95,11 +98,15 @@ int main(int argc, char const *argv[])
 			}
 		}
 
+#if defined(ANDROMEDA_EDITOR)
+		app.m_FrameBuffer->Unbind();
+#endif
+
 		// // Resize Geometry owned by sandbox
 		app.Resize();
 
 		// // Update Endinge Editor UI
-		Andromeda::Editor::Update();
+		Andromeda::Editor::Update(app.m_FrameBuffer->GetTextureID());
 
 		// Swap Buffers
 		Andromeda::Window::SwapBuffers(app.GetWidnowId());

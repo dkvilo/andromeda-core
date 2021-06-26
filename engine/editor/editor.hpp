@@ -11,6 +11,7 @@
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
+#include "fa-icons.hpp"
 #endif
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
@@ -32,9 +33,9 @@ public:
 		Get().setup_editor_impl();
 	}
 
-	static void Update()
+	static void Update(uint32_t frameBufferTextureID)
 	{
-		Get().update_editor_impl();
+		Get().update_editor_impl(frameBufferTextureID);
 	}
 
 	static void Clean()
@@ -70,27 +71,41 @@ private:
 	void setup_editor_impl()
 	{
 
-#ifdef ANDROMEDA_EDITOR)
+#ifdef ANDROMEDA_EDITOR
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO &io = ImGui::GetIO();
-		(void)io;
+
+		// Load main font (Ruda)
+		{
+			ImFontConfig config;
+			config.OversampleH = 2;
+			config.OversampleV = 1;
+			config.GlyphExtraSpacing = ImVec2(1.0f, 1.0f);
+			io.Fonts->AddFontFromFileTTF("./engine/editor/assets/font/Ruda-Bold.ttf", 14.5f, &config);
+		}
+
+		// Load Icons font
+		{
+			ImFontConfig config;
+			config.MergeMode = true;
+			config.PixelSnapH = true;
+
+			config.OversampleH = 2;
+			config.OversampleV = 1;
+			config.GlyphExtraSpacing = ImVec2(3.0f, 3.0f);
+
+			static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
+			io.Fonts->AddFontFromFileTTF("./engine/editor/assets/font/Fa-Solid-900.ttf", 11.0f, &config, icons_ranges);
+		}
 
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-		float round_value = 3.0f;
-
 		ImGuiStyle *style = &ImGui::GetStyle();
 		ImVec4 *colors = style->Colors;
-
-		ImFontConfig config;
-		config.OversampleH = 2;
-		config.OversampleV = 1;
-		config.GlyphExtraSpacing.x = 1.0f;
-		io.Fonts->AddFontFromFileTTF("./engine/editor/assets/font/Ruda-Bold.ttf", 15.0f, &config);
 
 		colors[ImGuiCol_Text] = ImVec4(0.952, 0.962, 0.982, 1.00f);
 		colors[ImGuiCol_TextDisabled] = ImVec4(0.44f, 0.44f, 0.44f, 1.00f);
@@ -163,7 +178,7 @@ private:
 	}
 
 private:
-	void update_editor_impl()
+	void update_editor_impl(uint32_t frameBufferTextureID)
 	{
 #ifdef ANDROMEDA_EDITOR
 
@@ -171,30 +186,16 @@ private:
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		static bool opt_fullscreen = true;
-		static bool opt_padding = true;
 		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground;
-		if (opt_fullscreen)
-		{
-			const ImGuiViewport *viewport = ImGui::GetMainViewport();
-			ImGui::SetNextWindowPos(viewport->WorkPos);
-			ImGui::SetNextWindowSize(viewport->WorkSize);
-			ImGui::SetNextWindowViewport(viewport->ID);
-			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-		}
+		const ImGuiViewport *viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->WorkPos);
+		ImGui::SetNextWindowSize(viewport->WorkSize);
+		ImGui::SetNextWindowViewport(viewport->ID);
 
-		if (opt_padding)
-		{
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding & ImGuiStyleVar_FrameRounding, ImVec2(0.0f, 0.0f));
-		}
-
-		ImGui::Begin("Editor Tools", 0, window_flags);
-		if (opt_padding)
-		{
-			ImGui::PopStyleVar();
-		}
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding & ImGuiStyleVar_FrameRounding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("Editor Tools", 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus);
+		ImGui::PopStyleVar();
 
 		// DockSpace
 		ImGuiIO &io = ImGui::GetIO();
@@ -205,6 +206,7 @@ private:
 		}
 		ImGui::End(); // End of the Dockspace
 
+		Editor::DrawGameViewPort(frameBufferTextureID);
 		Editor::DrawEntityManagerTool();
 		Editor::DrawProximaCommandLineTool();
 
@@ -237,6 +239,59 @@ private:
 #endif
 	}
 
+	void DrawGameViewPort(uint32_t texture)
+	{
+#ifdef ANDROMEDA_EDITOR
+		ImGui::Begin("Viewport", 0, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		ImVec2 windowSize = GetLargestSizeForViewport();
+		ImVec2 windowPos = GetCenteredPositionForViewport(windowSize);
+
+		// Center Framebuffer Texture
+		ImGui::SetCursorPos(windowPos);
+
+		ImGui::Image((ImTextureID)texture, windowSize, ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::End();
+#endif
+	}
+
+	static float TargetAspectRatio()
+	{
+		return 16.0f / 9.0f;
+	}
+
+	static ImVec2 GetLargestSizeForViewport()
+	{
+		ImVec2 windowSize = ImGui::GetContentRegionAvail();
+
+		windowSize.x -= ImGui::GetScrollX();
+		windowSize.y -= ImGui::GetScrollY();
+
+		float aspectWidth = windowSize.x;
+		float aspectHight = aspectWidth / TargetAspectRatio();
+
+		if (aspectHight > windowSize.y)
+		{
+			aspectWidth = aspectHight * TargetAspectRatio();
+			aspectHight = windowSize.y;
+		}
+
+		return ImVec2(aspectWidth, aspectHight);
+	}
+
+	static ImVec2 GetCenteredPositionForViewport(const ImVec2 &aspectSize)
+	{
+		ImVec2 windowSize = ImGui::GetContentRegionAvail();
+
+		windowSize.x -= ImGui::GetScrollX();
+		windowSize.y -= ImGui::GetScrollY();
+
+		float viewportX = (windowSize.x / 2.0f) - (aspectSize.x / 2.0f);
+		float viewportY = (windowSize.y / 2.0f) - (aspectSize.y / 2.0f);
+
+		return ImVec2(viewportX + ImGui::GetCursorPosX(), viewportY + ImGui::GetCursorPosY());
+	}
+
 	void DrawEntityManagerTool()
 	{
 #ifdef ANDROMEDA_EDITOR
@@ -244,7 +299,7 @@ private:
 		ImGui::Begin("Entity Manager Tool");
 		ImGui::BeginTabBar("Scene");
 
-		if (ImGui::BeginTabItem("Hierarchy"))
+		if (ImGui::BeginTabItem(ICON_FA_LIST_UL "Hierarchy"))
 		{
 			int manager_size = Andromeda::SceneManager::Registry.size();
 			ImGui::Separator();
@@ -260,13 +315,15 @@ private:
 				if (!ent->m_Flag)
 				{
 					ImGui::SameLine();
-					ImGui::Text("Disabled");
+					ImGui::Text(ICON_FA_EYE_SLASH);
 				}
 				if (is_open)
 				{
 					// Just render child component as a simple text for now
 					for (int j = 0; j < ent->GetComponents().size(); j++)
 					{
+						ImGui::Text(ICON_FA_DICE_D6);
+						ImGui::SameLine();
 						ImGui::Text(ent->GetComponents()[j].name);
 					}
 
@@ -284,19 +341,19 @@ private:
 			ImGui::EndTabItem();
 		}
 
-		if (ImGui::BeginTabItem("Environment"))
+		if (ImGui::BeginTabItem(ICON_FA_FAN "Environment"))
 		{
 			ImGui::TextWrapped("This section is responsible for modifing current scene environment, 2DLighting, Shaddow, World Physics");
 			ImGui::EndTabItem();
 		}
 
-		if (ImGui::BeginTabItem("Audio"))
+		if (ImGui::BeginTabItem(ICON_FA_MUSIC "Audio"))
 		{
 			ImGui::TextWrapped("This section is responsible for managing audio streams and resources in current the scene");
 			ImGui::EndTabItem();
 		}
 
-		if (ImGui::BeginTabItem("Input"))
+		if (ImGui::BeginTabItem(ICON_FA_PLUG "Input"))
 		{
 			ImGui::TextWrapped("This section is responsible for user Input mapping and device input configuration in the current scene. But you can select Set As Global to uee it in the entire project");
 			static bool is_global;
@@ -307,7 +364,7 @@ private:
 		ImGui::EndTabBar(); // End Entity Manager Tool
 		ImGui::End();
 
-		ImGui::Begin("Inspector");
+		ImGui::Begin(ICON_FA_LIST_UL "Inspector");
 		if (m_ShowEditableState && m_SelectedEntity != nullptr)
 		{
 			Editor::DrawEntityComponentEditableProperties(m_SelectedEntity);
@@ -331,7 +388,7 @@ private:
 		if (transform != nullptr)
 		{
 			ImGui::Separator();
-			ImGui::Text("%s", transform->m_Name);
+			ImGui::Text(ICON_FA_DICE_D6 "%s", transform->m_Name);
 			ImGui::DragFloat3("Position", glm::value_ptr(transform->m_Position));
 			ImGui::SliderFloat("Scale", &transform->m_Scale, 0.0f, 10.f);
 			ImGui::Text("Rotation");

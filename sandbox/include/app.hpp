@@ -5,6 +5,8 @@
 #include "window/window.hpp"
 #include "editor/editor.hpp"
 
+#include "libs/opengl/frame_buffer.hpp"
+
 #include "glm/vec3.hpp"
 #include "game_object.hpp"
 
@@ -14,17 +16,20 @@ public:
 	int m_Width, m_Height;
 	double m_DeltaTime;
 	double m_ElapsedTime = Andromeda::Window::TimeNow();
+	L::Graphics::OpenGL::FrameBuffer *m_FrameBuffer;
 
 	Sandbox()
 	{
 		// Configure Window
-		Andromeda::Types::WindowConfog conf{"Andromeda", 1080, 720};
+		Andromeda::Types::WindowConfog conf{"Andromeda", 1920, 1080};
 
 		// Create new Window
 		m_Window = new Andromeda::Window(conf);
 
 		// Attach Window Key handler
 		Andromeda::Window::KeyHandler(GetWidnowId(), Sandbox::KeyHandler);
+
+		m_FrameBuffer = new L::Graphics::OpenGL::FrameBuffer(conf.width, conf.height);
 	}
 
 	inline GLFWwindow *const GetWidnowId() const
@@ -58,14 +63,13 @@ public:
 
 	static void BaseRenderer(int width, int height)
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		glClear(GL_COLOR_BUFFER_BIT);
 		glViewport(0, 0, width, height);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 
 		float aspect = (float)width / (float)height;
-		glOrtho(-aspect, aspect, -1, 1, 0.00001, -100000.f);
+		glOrtho(-aspect, aspect, -1, 1, 0.1, -1000.f);
 	}
 	/*
 	 *
