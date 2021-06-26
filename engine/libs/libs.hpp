@@ -26,6 +26,8 @@ namespace L
 			class VertexBuffer;
 			class IndexBuffer;
 			class Texture;
+			class FrameBuffer;
+			class RenderBuffer;
 		};
 	}
 
