@@ -32,7 +32,11 @@ public:
 		// Attach Window Key handler
 		Andromeda::Window::KeyHandler(GetWidnowId(), Sandbox::KeyHandler);
 
+#if defined(ANDROMEDA_EDITOR)
+		// Attach FrameBuffer handler
+		Andromeda::Window::FrameBufferSetSizeHandler(GetWidnowId(), Sandbox::FrameBufferSizeHandler);
 		m_FrameBuffer = new OpenGL::FrameBuffer(m_Window->GetVideoMode()->width, m_Window->GetVideoMode()->height);
+#endif
 	}
 
 	inline GLFWwindow *const GetWidnowId() const
@@ -74,10 +78,9 @@ public:
 		float aspect = (float)width / (float)height;
 		glOrtho(-aspect, aspect, -1, 1, 0.1, -1000.f);
 	}
-	/*
-	 *
-	 * WINDOW Callbacks
-	 *
+
+	/**
+	 * WINDOW Key Input Handler
 	 */
 	static void KeyHandler(GLFWwindow *window, int key, int scancode, int action, int mods)
 	{
@@ -85,6 +88,14 @@ public:
 		{
 			glfwSetWindowShouldClose(window, GLFW_TRUE);
 		}
+	}
+
+	/**
+	 * Update viewport on Framebuffer size change
+	 */
+	static void FrameBufferSizeHandler(GLFWwindow *window, int width, int height)
+	{
+		glViewport(0, 0, width, height);
 	}
 
 private:

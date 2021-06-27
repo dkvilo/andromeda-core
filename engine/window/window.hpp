@@ -71,6 +71,11 @@ public:
 		return glfwSetKeyCallback(window, callback);
 	}
 
+	static GLFWframebuffersizefun FrameBufferSetSizeHandler(GLFWwindow *window, GLFWframebuffersizefun callback)
+	{
+		return glfwSetFramebufferSizeCallback(window, callback);
+	}
+
 	static int ShouldClose(GLFWwindow *handle)
 	{
 		return glfwWindowShouldClose(handle);
