@@ -6,11 +6,8 @@ Project is very sideeey, It is possible that I'll newer finish it.
 
 # WIP Screenshots
 
-## Editor build (1,4 MB)
+## Editor
 <img src="https://github.com/dkvilo/andromeda-core/blob/main/screenshots/editor.png" />
-
-## Release build (255,8 KB)
-<img src="https://github.com/dkvilo/andromeda-core/blob/main/screenshots/release.png" />
 
 
 ```zsh
