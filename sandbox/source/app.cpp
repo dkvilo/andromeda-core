@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
 	texturedQuad.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
 	texturedQuad.AddComponent<LegacyQuad>(new LegacyQuad());
 	texturedQuad.AddComponent<ForeignTransform>(new ForeignTransform());
-	texturedQuad.AddComponent<Texture2d>(new Texture2d("./sandbox/assets/texture/01.jpg"));
+	texturedQuad.AddComponent<Texture2d>(new Texture2d("./sandbox/assets/texture/default.png"));
 	Andromeda::SceneManager::AddEntity(&texturedQuad);
 
 	GameObject ball = GameObject("Ball");

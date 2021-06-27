@@ -10,18 +10,21 @@
 #include "glm/vec3.hpp"
 #include "game_object.hpp"
 
+using namespace L::Graphics;
+using namespace Andromeda::Types;
+
 struct Sandbox
 {
 public:
 	int m_Width, m_Height;
 	double m_DeltaTime;
 	double m_ElapsedTime = Andromeda::Window::TimeNow();
-	L::Graphics::OpenGL::FrameBuffer *m_FrameBuffer;
+	OpenGL::FrameBuffer *m_FrameBuffer;
 
 	Sandbox()
 	{
 		// Configure Window
-		Andromeda::Types::WindowConfog conf{"Andromeda", 1920, 1080};
+		WindowConfog conf{"Andromeda", 1920, 1080};
 
 		// Create new Window
 		m_Window = new Andromeda::Window(conf);
@@ -29,7 +32,7 @@ public:
 		// Attach Window Key handler
 		Andromeda::Window::KeyHandler(GetWidnowId(), Sandbox::KeyHandler);
 
-		m_FrameBuffer = new L::Graphics::OpenGL::FrameBuffer(conf.width, conf.height);
+		m_FrameBuffer = new OpenGL::FrameBuffer(m_Window->GetVideoMode()->width, m_Window->GetVideoMode()->height);
 	}
 
 	inline GLFWwindow *const GetWidnowId() const
@@ -63,7 +66,7 @@ public:
 
 	static void BaseRenderer(int width, int height)
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, width, height);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();

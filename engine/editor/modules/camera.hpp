@@ -1,12 +1,11 @@
-
 #ifndef __ANDROMEDA_EDITOR_CAMERA_HPP__
 #define __ANDROMEDA_EDITOR_CAMERA_HPP__
 
-#include "andromeda.hpp"
-#include "entity/entity.hpp"
+#include "../andromeda.hpp"
+#include "../entity/entity.hpp"
 
-#include "glm/matrix.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include <glm/matrix.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 using namespace glm;
 
@@ -17,7 +16,7 @@ public:
 	EditorCamera() = default;
 
 	EditorCamera(float left, float right, float bottom, float top)
-			: m_ProjectionMatrix(ortho(left, right, bottom, top)), m_ViewMatrix(1.0f)
+		: m_ProjectionMatrix(ortho(left, right, bottom, top)), m_ViewMatrix(1.0f)
 	{
 	}
 
