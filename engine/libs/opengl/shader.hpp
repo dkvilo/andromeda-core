@@ -6,7 +6,8 @@
 #include "../libs.hpp"
 #include "../fs/fs.hpp"
 
-class L::Graphics::OpenGL::Shader
+using namespace L::Graphics;
+class OpenGL::Shader
 {
 private:
 	uint32_t m_RendererID;

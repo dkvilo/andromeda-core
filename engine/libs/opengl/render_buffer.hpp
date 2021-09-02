@@ -2,8 +2,6 @@
 #define __ANDROMEDA_LIBS_OPENGL_RENDER_BUFFER__
 
 #include "../libs.hpp"
-
-using namespace L::Graphics;
 class OpenGL::RenderBuffer
 {
 

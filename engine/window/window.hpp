@@ -61,6 +61,11 @@ public:
 		return get_window_info_impl();
 	}
 
+	static GLFWwindow *const GetWindowContext()
+	{
+		return Get().GetId();
+	}
+
 	static void SetWindowInfo(uint32_t width, uint32_t height)
 	{
 		Get().set_window_info_impl(width, height);

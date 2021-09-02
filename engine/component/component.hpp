@@ -1,13 +1,14 @@
 #ifndef ANDROMEDA_ENGINE_COMPONENTS
 #define ANDROMEDA_ENGINE_COMPONENTS
 
+#include <math.h>
+
 #include "andromeda.hpp"
 
-#include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 #include "glm/vec4.hpp"
 #include "glm/mat4x4.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 #include "window/window.hpp"
 #include "entity/component.hpp"
@@ -15,7 +16,6 @@
 #include "renderer/renderer.hpp"
 
 #include "../libs/libs.hpp"
-#include "../libs/opengl/legacy.hpp"
 #include "../libs/opengl/shader.hpp"
 #include "../libs/opengl/texture.hpp"
 
@@ -23,363 +23,216 @@ using namespace glm;
 using namespace L::Graphics;
 using namespace Andromeda::Components;
 
-struct Andromeda::Components::RGBColorMaterial : Andromeda::Entity
-{
-	vec3 m_Color;
+#define VBO_BUFFER_LENGTH 32
+#define EBO_BUFFER_LENGTH 6
 
-	RGBColorMaterial(const vec3 &&color) : m_Color(color)
+struct Andromeda::Components::Texture2d 
+	: public Andromeda::Entity
+{
+	
+	const char *m_Path;
+	uint32_t m_Slot;
+	
+	OpenGL::Texture *m_Texture;
+
+	Texture2d() {}
+
+	Texture2d(const char *path, uint32_t slot) 
+		: m_Path(path)
+		, m_Slot(slot) 
 	{
-		m_Name = "Color Material";
+		m_Name 	  = "Texture2d";	
+		m_Texture = new OpenGL::Texture(m_Path);
 	}
 
-	void update(double dt)
+	void BindTexture(const Andromeda::Renderer &renderer) const
 	{
-		OpenGL::Legacy::fill_color(m_Color);
+		renderer.SetTexture(m_Slot);
+		m_Texture->Bind();
+	}
+	
+	void AttachRenderer(const Andromeda::Renderer &renderer)
+	{
+		BindTexture(renderer);
 	}
 };
 
-struct Andromeda::Components::Stroke : public Andromeda::Entity, public Andromeda::Component
-{
-	RGBColorMaterial *m_ColorMaterial;
-
-	float m_Offset = 0.0f;
-	float m_Radius = 10.0f;
-	float m_Angle = 0.0f;
-
-	int m_Segments = 100;
-	int m_LineWidth = 8;
-
-	Stroke() : m_ColorMaterial(new RGBColorMaterial(vec3(0.121f, 0.917f, 0.566f)))
-	{
-		m_Name = "Stroke2d";
-		m_Rotation = vec3(0, 0, 0);
-	}
-
-	void update(double dt)
-	{
-
-		UpdateProjection(0.0f, float(Andromeda::Window::GetWindowInfo().width), 0.0f, float(Andromeda::Window::GetWindowInfo().height), 0.00001f, -100000.0f);
-
-		glLineWidth(m_LineWidth);
-		glPushMatrix();
-		if (m_Angle != 0.0f)
-		{
-			glRotatef(m_Angle, m_Rotation.x, m_Rotation.y, m_Rotation.z);
-		}
-		Andromeda_2d_begin(Andromeda_line_loop);
-		m_ColorMaterial->update(dt);
-		OpenGL::Legacy::draw_circle(ScreenToWorldSpace(m_Position), m_Radius + m_Offset, m_Segments);
-		Andromeda_2d_end();
-		glPopMatrix();
-	}
-
-	~Stroke()
-	{
-		delete m_ColorMaterial;
-	}
-};
-
-struct Andromeda::Components::Shape2d : public Andromeda::Entity, public Andromeda::Component
-{
-
-	float m_Radius = 100.f;
-	float m_Angle = 0.0f;
-	int m_Segments = 100;
-	int m_Triangles = 100;
-
-	Shape2d()
-	{
-		m_Name = "Shape2d";
-	}
-
-	void update(double dt)
-	{
-
-		UpdateProjection(0.0f, float(Andromeda::Window::GetWindowInfo().width), 0.0f, float(Andromeda::Window::GetWindowInfo().height), 0.00001f, -100000.0f);
-
-		glPushMatrix();
-		if (m_Angle != 0.0f)
-		{
-			glRotatef(m_Angle, m_Rotation.x, m_Rotation.y, m_Rotation.z);
-		}
-		Andromeda_2d_begin(Andromeda_triangle_fan);
-		OpenGL::Legacy::draw_filled_circle(ScreenToWorldSpace(m_Position), m_Radius, m_Segments, m_Triangles);
-		Andromeda_2d_end();
-		glPopMatrix();
-	}
-};
-
-struct Andromeda::Components::Transform : public Andromeda::Entity
-{
-	float m_Scale = 0.5f;
-	float m_Angle = 0.0f;
-
-	Transform(const vec3 &&pos, const vec3 &&rot, float scale) : m_Scale(scale)
-	{
-		m_Name = "Transform";
-		m_Position = pos;
-		m_Rotation = rot;
-	}
-
-	void update(double dt) {}
-};
-
-struct Andromeda::Components::ForeignTransform : public Andromeda::Entity
-{
-	float m_Scale = 0.5f;
-	float m_Angle = 0.0f;
-
-	bool m_ExtendRotationDireaction;
-	bool m_ExtendRotationAngle;
-	bool m_ExtendTransform;
-	bool m_ExtendScale;
-
-	Andromeda::Components::Transform *c_OtherTransform;
-
-	ForeignTransform()
-		: c_OtherTransform(nullptr),
-		  m_ExtendRotationAngle(false),
-		  m_ExtendRotationDireaction(false),
-		  m_ExtendScale(false),
-		  m_ExtendTransform(false)
-	{
-		m_Name = "ForeignTransform";
-		m_Flag = false;
-	}
-
-	void SetOhterTransfor(Andromeda::Components::Transform *other)
-	{
-		c_OtherTransform = other;
-	}
-
-	void update(double dt)
-	{
-		if (c_OtherTransform != nullptr)
-		{
-
-			if (m_ExtendTransform)
-			{
-				m_Position = c_OtherTransform->m_Position;
-			}
-
-			if (m_ExtendRotationDireaction)
-			{
-				m_Rotation = c_OtherTransform->m_Rotation;
-			}
-
-			if (m_ExtendRotationAngle)
-			{
-				m_Angle = c_OtherTransform->m_Angle;
-			}
-
-			if (m_ExtendScale)
-			{
-				m_Scale = c_OtherTransform->m_Scale;
-			}
-		}
-	}
-
-	~ForeignTransform()
-	{
-		delete c_OtherTransform;
-	}
-};
-
-struct Andromeda::Components::LegacyQuad : public Andromeda::Entity, public Andromeda::Component
-{
-	float m_Radius = 100.f;
-	float m_Angle = 0.0f;
-
-	uint32_t m_Texture;
-
-	bool m_UseTransform = true;
-	vec2 m_Dimensions;
-
-	LegacyQuad() : m_Dimensions(0.5f, 0.5f)
-	{
-		m_Name = "LegacyQuad";
-	}
-
-	void update(double dt)
-	{
-
-		UpdateProjection(0.0f, float(Andromeda::Window::GetWindowInfo().width), 0.0f, float(Andromeda::Window::GetWindowInfo().height), 0.00001f, -100000.0f);
-
-		glPushMatrix();
-		glEnable(GL_COLOR_MATERIAL);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		if (m_Angle != 0.0f)
-		{
-			glRotatef(m_Angle, m_Rotation.x, m_Rotation.y, m_Rotation.z);
-		}
-
-		if (m_Texture)
-		{
-			glBindTexture(GL_TEXTURE_2D, m_Texture);
-			glEnable(GL_TEXTURE_2D);
-		}
-
-		Andromeda_2d_begin(Andromeda_quads);
-		OpenGL::Legacy::draw_quad(ScreenToWorldSpace(m_Position), m_Dimensions);
-		Andromeda_2d_end();
-
-		glDisable(GL_TEXTURE_2D);
-		glPopMatrix();
-	}
-};
-
-struct Andromeda::Components::Quad : public Andromeda::Entity
+struct Andromeda::Components::Mesh2d
+	: public Andromeda::Entity
+	, public Andromeda::Component
 {
 
 	Andromeda::Renderer m_Renderer;
+	
+	Texture2d c_Texture;
 
-	mat4 m_ProjectionMatrix = mat4(1.0f);
+	vec3 m_Scale;
+	mat4 m_Model = mat4(1.0f);
+	mat4 m_View = mat4(1.0f);
 
-	Quad()
+	/**
+	 * TODO: Set Shaders from Material
+	 * 
+	 * 
+	 */
+	static constexpr char *s_FragShdr = "./engine/assets/shaders/basic/color.frag";
+	static constexpr char *s_VertShdr = "./engine/assets/shaders/basic/color.vert";
+
+	bool s_FirstFrame = false;
+	
+	Mesh2d(float scale) : m_Scale(scale)
 	{
-		m_Name = "Quad";
-		m_Renderer.Init(
-			OpenGL::Shader(
-				"./engine/assets/shaders/basic/color.frag",
-				"./engine/assets/shaders/basic/color.vert"),
-			OpenGL::VertexBuffer(36 * sizeof(float)));
+		m_Name = "Mesh2d";
 
-		float vertexBufferData[36] = {
-			// Positions         // colors
-			-0.1f,
-			-0.1f,
-			0.0f,
-			1.0f,
-			1.0f,
-			1.0f,
-			0.1f,
-			-0.1f,
-			0.0f,
-			1.0f,
-			1.0f,
-			1.0f,
-			-0.1,
-			0.1f,
-			0.0f,
-			1.0f,
-			1.0f,
-			1.0f,
-
-			-0.1f,
-			0.1f,
-			0.0f,
-			1.0f,
-			1.0f,
-			1.0f,
-			0.1f,
-			-0.1f,
-			0.0f,
-			1.0f,
-			1.0f,
-			1.0f,
-			0.1f,
-			0.1f,
-			0.0f,
-			1.0f,
-			1.0f,
-			1.0f,
+		float vertexBufferData[VBO_BUFFER_LENGTH] = {
+			// Positions         	// Colors           // UV
+			-0.5f,  0.5f, 0.0f,		1.0f, 0.0f, 0.0f, 	0.0f, 0.0f, // Top-left
+			 0.5f,  0.5f, 0.0f, 	0.0f, 1.0f, 0.0f, 	1.0f, 0.0f,	 // Top-right
+			 0.5f, -0.5f, 0.0f, 	0.0f, 0.0f, 1.0f, 	1.0f, 1.0f, // Bottom-right
+			-0.5f, -0.5f, 0.0f, 	1.0f, 1.0f, 1.0f, 	0.0f, 1.0f // Bottom-left
 		};
 
-		m_Renderer.ResetSubmitton();
-		m_Renderer.Submit(vertexBufferData, 36 * sizeof(float), 6, 6 * sizeof(float));
+		uint32_t indicies[EBO_BUFFER_LENGTH] = {
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		m_Renderer.Init(
+			OpenGL::Shader(s_FragShdr, s_VertShdr),
+			OpenGL::VertexArrayBuffer(),
+			OpenGL::VertexBuffer(VBO_BUFFER_LENGTH * sizeof(float)),
+			OpenGL::IndexBuffer(indicies, EBO_BUFFER_LENGTH)
+		);
+	
+		m_Renderer.Submit(vertexBufferData, VBO_BUFFER_LENGTH * sizeof(float), 8, 8 * sizeof(float));
 	}
 
 	void update(double dt)
 	{
-		//
-		// m_Renderer.SetViewProjection(m_ProjectionMatrix);
-		//
-		// We meed way to acces window information
-		// m_Renderer.SetResolution(vec2(1080, 720));
+
+		float aspect = (float)Andromeda::Window::GetWindowInfo().width / (float)Andromeda::Window::GetWindowInfo().height;
+		UpdateProjection(-aspect, aspect, -1.0f, 1.0f, 1.0f, -1.0f);
+	
+		m_Renderer.SetViewProjection(m_Projection * m_View * m_Model);
+		m_Renderer.SetResolution(vec2(Andromeda::Window::GetWindowInfo().width, Andromeda::Window::GetWindowInfo().height));
 		m_Renderer.SetTime(dt);
-		m_Renderer.Draw();
+		
+		if (!s_FirstFrame)
+		{
+			c_Texture.AttachRenderer(m_Renderer);
+			s_FirstFrame = true;
+		}
+
+		m_Renderer.Draw(EBO_BUFFER_LENGTH);
 	}
 };
 
-struct Andromeda::Components::Texture2d : public Andromeda::Entity
+class Andromeda::Components::Transform 
+	: public Andromeda::Entity
+	, public Andromeda::Component
 {
-	const char *m_Path;
-	uint32_t m_Texture;
+public:
+	vec3 m_Scale;
+	float m_Angle;
 
-	Texture2d(const char *path) : m_Path(path)
+public:
+	Transform(const vec3&& position, const vec3 &&rotation, const vec3 &&scale) 
 	{
-		m_Name = "Texture2d";
-		L::Graphics::OpenGL::Texture::Create(m_Path, m_Texture);
+		m_Name        = "Transform";
+		m_Projection  = mat4(1.0f);
+
+		m_Rotation 	  = rotation;
+		m_Position    = position;
+		m_Scale       = scale;
 	}
+
+	void Scale(const vec3 &scale)
+	{
+		m_Scale = scale;
+		m_Projection = SampleScale(scale);
+	}
+
+	void Rotate(float angle)
+	{
+		m_Angle = angle;
+		m_Projection = SampleRotation(m_Angle); 
+	}
+
+	void Translate(const vec3 &position)
+	{
+		m_Position = position;
+		m_Projection = SampleTranslation(m_Position);
+	}
+
+private:
+	mat4 SampleRotation(float angle) const
+	{
+		return rotate(mat4(1.0f), radians(angle), m_Rotation);
+	}
+
+	mat4 SampleTranslation(const vec3 &position) const 
+	{
+		return translate(mat4(1.0f), position);
+	}
+	
+	mat4 SampleScale(const vec3 & _scale) const
+	{
+		return scale(mat4(1.f), _scale);
+	}
+
+public:
+	void update(double dt)
+	{
+		float aspect = (float) Andromeda::Window::GetWindowInfo().width / (float) Andromeda::Window::GetWindowInfo().height;
+
+		UpdateProjection(-aspect, aspect, -1.0f, 1.0f, 1.0f, -1.0f);
+		m_Projection = SampleTranslation(ScreenToWorldSpace(m_Position)) * SampleRotation(m_Angle) * SampleScale(m_Scale);
+	}
+
 };
 
-struct Andromeda::Components::Sphere : public Andromeda::Entity, public Andromeda::Component
+class Andromeda::Components::Camera 
+	: public Andromeda::Entity
+	, public Andromeda::Component
 {
-	float m_Angle = 0.0f;
-	float m_Radius = 10.0f;
 
-	uint32_t m_Segments = 80;
-	uint32_t m_Texture;
+private:
+	vec3 m_Eye, m_Center, m_Up;
 
-	Sphere()
+public:
+	Camera(const vec3 &eye, const vec3 &center, const vec3 &up)
 	{
-		m_Name = "Sphere";
-	};
+		m_Name = "Camera";
+		CalculateViewMatrix(eye, center, up);
+	}
+
+	void CalculateViewMatrix(const vec3 &eye, const vec3 &center, const vec3 &up)
+	{
+		m_Eye, m_Center, m_Up = eye, center, up;
+		m_Projection = inverse(lookAt(m_Eye, m_Center, m_Up));
+	}
+
+	inline vec3 &GetEye()
+	{
+		return m_Eye;
+	}
+
+	inline vec3 &GetCenter()
+	{
+		return m_Center;
+	}
+
+	inline vec3 &GetUp()
+	{
+		return m_Up;
+	}
 
 	void update(double dt)
 	{
-
-		UpdateProjection(0.0f, float(Andromeda::Window::GetWindowInfo().width), 0.0f, float(Andromeda::Window::GetWindowInfo().height), 0.00001f, -100000.0f);
-
-		glPushMatrix();
-		glEnable(GL_LIGHT0);
-		glEnable(GL_LIGHTING);
-		glEnable(GL_COLOR_MATERIAL);
-
-		if (m_Angle != 0.0f)
-		{
-			glRotatef(m_Angle, m_Rotation.x, m_Rotation.y, m_Rotation.z);
-		}
-
-		if (m_Texture)
-		{
-			glBindTexture(GL_TEXTURE_2D, m_Texture);
-			glEnable(GL_TEXTURE_2D);
-		}
-
-		// yellow diffuse : color where light hit directly the object's surface
-		float diffuse[] = {1.0f, 1.0f, 0.0f, 1.0f};
-
-		// Yellow ambient : color applied everywhere
-		float ambient[] = {0.f, 0.f, 1.f, 1.000f};
-
-		vec3 lightPosition = m_Position + vec3(2.0f, 2.0f, -7.0f);
-
-		// Ambient light component
-		glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-
-		// Diffuse light component
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-
-		//Light position
-		glLightfv(GL_LIGHT0, GL_POSITION, value_ptr(lightPosition));
-
-		//Enable the first light and the lighting mode
-		glEnable(GL_LIGHTING);
-
-		Andromeda_2d_begin(Andromeda_triangles);
-		OpenGL::Legacy::draw_sphere(ScreenToWorldSpace(m_Position), m_Segments, m_Radius);
-		Andromeda_2d_end();
-
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_LIGHT0);
-		glDisable(GL_LIGHTING);
-		glPopMatrix();
-	}
+		float aspect = (float) Andromeda::Window::GetWindowInfo().width / (float) Andromeda::Window::GetWindowInfo().height;		
+		UpdateProjection(-aspect, aspect, -1.0f, 1.0f, 1.0f, -1.0f);
+	} 
 };
 
-#endif
+
+#endif // ANDROMEDA_ENGINE_COMPONENTS
