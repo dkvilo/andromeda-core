@@ -19,45 +19,47 @@ int main(int argc, char const *argv[])
 	Andromeda::Editor::SetWindow(app.Window());
 	Andromeda::Editor::Init();
 
-	GameObject complexShape = GameObject("Complex Shape");
-	complexShape.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
-	complexShape.AddComponent<Shape2d>(new Shape2d());
-	complexShape.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-	Andromeda::SceneManager::AddEntity(&complexShape);
+	// GameObject quad2 = GameObject("Test Shape 2");
+	// 	quad2.AddComponent<Texture2d>(new Texture2d("./sandbox/assets/texture/blank.png", 0));
+	// 	quad2.AddComponent<Mesh2d>(new Mesh2d(1.0f));
 
-	//
-	// 2D batch renderer in development
-	//
-	// GameObject quad = GameObject("Test Shape");
-	// quad.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
-	// quad.AddComponent<Quad>(new Quad());
-	// quad.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-	// Andromeda::SceneManager::AddEntity(&quad);
+	// 	quad2.AddComponent<Transform>(
+	// 		new Transform(
+	// 			vec3(1.0f, 0.0f, 1.0f), 	// Position
+	// 			vec3(0.0f, 0.0f, 1.0f), 	// Rotation
+	// 			vec3(10.0f, 10.0f, 10.0f)	// Scale
+	// 		)
+	// 	);
+		
+	// 	quad2.AddComponent<Camera>(new Camera(
+	// 		vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+	// 		vec3(0, 0, 0), // and looks at the origin
+	// 		vec3(0, 1, 0) // Head is up (set to 0,-1, 0 to look upside-down)
+	// 	));
 
-	GameObject texturedQuad = GameObject("Textured Quad");
-	texturedQuad.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.951f, 0.070f, 0.381f)));
-	texturedQuad.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-	texturedQuad.AddComponent<LegacyQuad>(new LegacyQuad());
-	texturedQuad.AddComponent<ForeignTransform>(new ForeignTransform());
-	texturedQuad.AddComponent<Texture2d>(new Texture2d("./sandbox/assets/texture/default.png"));
-	Andromeda::SceneManager::AddEntity(&texturedQuad);
+	// Andromeda::SceneManager::AddEntity(&quad2);
+	
 
-	GameObject ball = GameObject("Ball");
-	ball.AddComponent<RGBColorMaterial>(new RGBColorMaterial(vec3(0.928f, 1.000f, 0.387f)));
-	ball.AddComponent<Transform>(new Transform(vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, 0.f), 0.5f));
-	ball.AddComponent<Sphere>(new Sphere());
-	Andromeda::SceneManager::AddEntity(&ball);
+	GameObject quad = GameObject("Test Shape");
+		quad.AddComponent<Texture2d>(new Texture2d("./sandbox/assets/texture/default.png", 1));
+		quad.AddComponent<Mesh2d>(new Mesh2d(1.0f));
 
-	RGBColorMaterial *colorMaterial = static_cast<RGBColorMaterial *>(ball.GetComponent("RGBColorMaterial"));
+		quad.AddComponent<Transform>(
+			new Transform(
+				vec3(1.0f, 0.0f, 1.0f), 	// Position
+				vec3(0.0f, 0.0f, 1.0f), 	// Rotation
+				vec3(10.0f, 10.0f, 10.0f)	// Scale
+			)
+		);
+		
+		quad.AddComponent<Camera>(new Camera(
+			vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+			vec3(0, 0, 0), // and looks at the origin
+			vec3(0, 1, 0) // Head is up (set to 0,-1, 0 to look upside-down)
+		));
 
-	Transform *transform = static_cast<Transform *>(ball.GetComponent("Transform"));
-	if (transform != nullptr)
-	{
-		// Pick rotation side
-		transform->m_Rotation.y = 0.347f;
-		// Scale up the mesh
-		transform->m_Scale = 0.631f;
-	}
+	Andromeda::SceneManager::AddEntity(&quad);
+
 
 	while (!Andromeda::Window::ShouldClose(app.GetWidnowId()))
 	{
@@ -80,32 +82,17 @@ int main(int argc, char const *argv[])
 			{
 				// Update entity
 				ent->update(app.m_ElapsedTime);
-
-				//  Update color values dynamically based on elapsedTime
-				if (colorMaterial != nullptr && colorMaterial->m_Flag)
-				{
-					colorMaterial->m_Color =
-						vec3(abs(sin(L::Math::Lerp(.0f, .7f, app.m_ElapsedTime))),
-							 abs(cos(L::Math::Lerp(.0f, .7f, app.m_ElapsedTime))),
-							 abs(sin(L::Math::Lerp(.0f, .4f, app.m_ElapsedTime))));
-				}
-
-				// Update rotation angle based on elapsedTime
-				if (transform != nullptr)
-				{
-					transform->m_Angle = 90.0f * app.GetScaledElapsedTime(1.5f);
-				}
 			}
 		}
-
+ 
 #if defined(ANDROMEDA_EDITOR)
 		app.m_FrameBuffer->Unbind();
 #endif
 
-		// // Resize Geometry owned by sandbox
+		// Resize 
 		app.Resize();
 
-		// // Update Endinge Editor UI
+		// Update Endinge Editor UI
 		Andromeda::Editor::Update(app.m_FrameBuffer->GetTextureID());
 
 		// Swap Buffers

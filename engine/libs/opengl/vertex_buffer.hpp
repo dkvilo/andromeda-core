@@ -3,7 +3,8 @@
 
 #include "../libs.hpp"
 
-class L::Graphics::OpenGL::VertexBuffer
+using namespace L::Graphics;
+class OpenGL::VertexBuffer
 {
 private:
 	uint32_t m_RendererID;

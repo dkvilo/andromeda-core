@@ -6,22 +6,32 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-class L::Graphics::OpenGL::Texture
+using namespace L::Graphics;
+
+class OpenGL::Texture
 {
 
+private:
+	const char* m_Path;
+	uint32_t m_RendererID;
+	uint32_t m_Width, m_Height;
+
 public:
-	static void Create(const char *path, unsigned int &texture)
+
+	Texture() {}
+
+	Texture(const char *path) : m_Path(path)
 	{
 		int width, height, channels;
 
-		unsigned char *dataBuffer = stbi_load(path, &width, &height, &channels, 0);
+		unsigned char *dataBuffer = stbi_load(m_Path, &width, &height, &channels, 0);
 		ASSERT(dataBuffer, "(STB_IMAGE): Unable to load texture", NULL);
 
-		glGenTextures(1, &texture);
+		m_Width, m_Height = width, height;
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
-
+		glGenTextures(1, &m_RendererID);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		
 		GLenum texDataFormat;
 		if (channels == 4)
 		{
@@ -34,24 +44,47 @@ public:
 		}
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, texDataFormat, width, height, 0, texDataFormat, GL_UNSIGNED_BYTE, dataBuffer);
 		stbi_image_free(dataBuffer);
 	}
 
-	static void Generate(uint32_t width, uint32_t height, unsigned int &texture)
+	void Generate(uint32_t width, uint32_t height) 
 	{
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		m_Width, m_Height = width, height;
+
+		glGenTextures(1, &m_RendererID);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 	}
+
+	void Bind() const
+	{
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+	}
+
+	void Unbind() const
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	~Texture()
+	{
+		glDeleteTextures(1, &m_RendererID);
+	}
+
+	inline const char* GetPath() { return m_Path; }
+	inline uint32_t &Getheight() { return m_Height; }
+	inline uint32_t &GetWidth() { return m_Width; }
+	inline uint32_t &GetRendererID() { return m_RendererID; }
 };
 
 #endif // __ANDROMEDA_LIBS_OPENGL_TEXTURE__

@@ -59,6 +59,11 @@ public:
 		Get().draw_sphere_impl(position, segments, r);
 	}
 
+	static void area_light(const vec3 &position, const vec3 &lightPos, const vec4 &diffuse, const vec4 &ambient)
+	{
+		Get().area_light_impl(position, lightPos, diffuse, ambient);
+	}
+
 private:
 	void blend_alpha_impl()
 	{
@@ -66,18 +71,30 @@ private:
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
+	void area_light_impl(const vec3 &position, const vec3 &lightPos, const vec4 &diffuse, const vec4 &ambient)
+	{
+		vec3 lightPosition = lightPos;
+		glLightfv(GL_LIGHT0, GL_AMBIENT, value_ptr(ambient));
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, value_ptr(diffuse));
+		glLightfv(GL_LIGHT0, GL_POSITION, value_ptr(lightPosition));
+	}
+
 	void draw_quad_impl(vec3 &position, vec2 dimensions)
 	{
 
+		glNormal3f(position.x, position.y, 0.0f);
 		glTexCoord2f(0.0f, 0.0f);
 		glVertex3f(position.x, position.y + dimensions.x, 0.0f);
 
+		glNormal3f(position.x, position.y, 0.0f);
 		glTexCoord2f(1.0f, 0.0f);
 		glVertex3f(position.x + dimensions.x, position.y + dimensions.y, 0.0f);
 
+		glNormal3f(position.x, position.y, 0.0f);
 		glTexCoord2f(1.0f, 1.0f);
 		glVertex3f(position.x + dimensions.x, position.y, 0.0f);
 
+		glNormal3f(position.x, position.y, 0.0f);
 		glTexCoord2f(0.0f, 1.0f);
 		glVertex3f(position.x, position.y, 0.0f);
 	}
@@ -87,8 +104,14 @@ private:
 		glVertex2f(cx, cy);
 		for (size_t i = 0; i <= segments; i++)
 		{
+			glNormal3f(
+				(cx + (r * cos(i * L::Math::TWO_PI / max_triangle))),
+				(cy + (r * sin(i * L::Math::TWO_PI / max_triangle))),
+				0.0f);
+
 			glVertex2f(
-					(cx + (r * cos(i * L::Math::TWO_PI / max_triangle))), (cy + (r * sin(i * L::Math::TWO_PI / max_triangle))));
+				(cx + (r * cos(i * L::Math::TWO_PI / max_triangle))),
+				(cy + (r * sin(i * L::Math::TWO_PI / max_triangle))));
 		}
 	}
 
@@ -99,6 +122,7 @@ private:
 			float theta = 2.0f * L::Math::PI * float(i) / float(segments);
 			float x = r * cosf(theta);
 			float y = r * sinf(theta);
+			glNormal3f(x + cx, y + cy, 0.0f);
 			glVertex2f(x + cx, y + cy);
 		}
 	}
@@ -114,7 +138,7 @@ private:
 	void draw_sphere_impl(vec3 position, u_int32_t segments, float radius)
 	{
 
-		const int theta = 200;
+		const int theta = 20;
 
 		for (int lng = 0; lng < segments; lng++)
 			for (int lat = 0; lat < theta; lat++)

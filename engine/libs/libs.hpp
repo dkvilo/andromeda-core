@@ -24,6 +24,7 @@ namespace L
 			class Legacy;
 			class Shader;
 			class VertexBuffer;
+			class VertexArrayBuffer;
 			class IndexBuffer;
 			class Texture;
 			class FrameBuffer;

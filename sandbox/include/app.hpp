@@ -8,7 +8,7 @@
 #include "libs/opengl/frame_buffer.hpp"
 
 #include "glm/vec3.hpp"
-#include "game_object.hpp"
+#include "entity/game_object.hpp"
 
 using namespace L::Graphics;
 using namespace Andromeda::Types;
@@ -72,11 +72,6 @@ public:
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, width, height);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-
-		float aspect = (float)width / (float)height;
-		glOrtho(-aspect, aspect, -1, 1, 0.1, -1000.f);
 	}
 
 	/**

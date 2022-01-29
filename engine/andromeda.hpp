@@ -35,15 +35,10 @@ namespace Andromeda::Runtime
 
 namespace Andromeda::Components
 {
-	struct RGBColorMaterial;
-	struct Shape2d;
-	struct Transform;
-	struct ForeignTransform;
-	struct Stroke;
-	struct Quad;
-	struct LegacyQuad;
-	struct Sphere;
+	class Transform;
+	struct Mesh2d;
 	struct Texture2d;
+	class Camera;
 }
 
 namespace Andromeda::Types

@@ -22,50 +22,13 @@ struct TypeName<Andromeda::Components::Transform>
 };
 
 template <>
-struct TypeName<Andromeda::Components::Quad>
+struct TypeName<Andromeda::Components::Mesh2d>
 {
 	static const char *Get()
 	{
-		return "Quad";
+		return "Mesh2d";
 	}
 };
-
-template <>
-struct TypeName<Andromeda::Components::RGBColorMaterial>
-{
-	static const char *Get()
-	{
-		return "RGBColorMaterial";
-	}
-};
-
-template <>
-struct TypeName<Andromeda::Components::Shape2d>
-{
-	static const char *Get()
-	{
-		return "Shape2d";
-	}
-};
-
-template <>
-struct TypeName<Andromeda::Components::Sphere>
-{
-	static const char *Get()
-	{
-		return "Sphere";
-	}
-};
-
-template <>
-struct TypeName<Andromeda::Components::Stroke>
-{
-	static const char *Get()
-	{
-		return "Stroke";
-	}
-};
-
 template <>
 struct TypeName<Andromeda::Components::Texture2d>
 {
@@ -76,21 +39,13 @@ struct TypeName<Andromeda::Components::Texture2d>
 };
 
 template <>
-struct TypeName<Andromeda::Components::LegacyQuad>
+struct TypeName<Andromeda::Components::Camera>
 {
 	static const char *Get()
 	{
-		return "LegacyQuad";
+		return "Camera";
 	}
 };
 
-template <>
-struct TypeName<Andromeda::Components::ForeignTransform>
-{
-	static const char *Get()
-	{
-		return "ForeignTransform";
-	}
-};
 
 #endif // ANDROMEDA_ENGINE_COMPONENTS_TYPES
